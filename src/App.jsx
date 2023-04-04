@@ -1,5 +1,4 @@
-import { Component } from 'react';
-// import { useState } from 'react';
+import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import Header from './componens/Header/Header';
@@ -9,24 +8,18 @@ import { mockedCoursesList, mockedAuthorsList } from './constants';
 
 import './App.css';
 
-class App extends Component {
-	constructor(props) {
-		super(props);
+const App = () => {
+	const [mockedCoursesListA, setMockedCoursesListA] = useState([
+		...mockedCoursesList,
+	]);
+	const [mockedAuthorsListA, setMockedAuthorsListA] = useState([
+		...mockedAuthorsList,
+	]);
 
-		this.state = {
-			mockedCoursesList: [...mockedCoursesList],
+	const [searchPhrase, setSearchPhrase] = useState('');
+	const [isAddCourse, setIsAddCourse] = useState(false);
 
-			mockedAuthorsList: [...mockedAuthorsList],
-
-			searchPhrase: '',
-			isAddCourse: false,
-		};
-	}
-
-	// const [searchPhrase, setSearchPhrase] = useState('');
-	// const [isAddCourse, setIsAddCourse] = useState(false);
-
-	searchCourse = (items, searchPhrase) => {
+	const searchCourse = (items, searchPhrase) => {
 		if (searchPhrase?.length === 0) {
 			return items;
 		}
@@ -40,30 +33,30 @@ class App extends Component {
 		});
 	};
 
-	onUpdateSearch = (searchPhrase) => {
-		this.setState({ searchPhrase });
+	const onUpdateSearch = (searchPhrase) => {
+		setSearchPhrase(searchPhrase); // ? чи важливе минуле значення ?
 	};
 
-	coursesOrAddNewCourse = () => {
-		this.setState(({ isAddCourse }) => ({ isAddCourse: !isAddCourse }));
-		this.setState(({ searchPhrase }) => ({ searchPhrase: '' }));
+	const coursesOrAddNewCourse = () => {
+		setIsAddCourse((isAddCourse) => (isAddCourse = !isAddCourse));
+		setSearchPhrase((searchPhrase) => (searchPhrase = '')); // чи так записується із минулим значенням ?
 	};
 
-	onAddAuthor = (nameAuthor) => {
+	const onAddAuthor = (nameAuthor) => {
 		const newAuthorsList = [
-			...this.state.mockedAuthorsList,
+			...mockedAuthorsListA,
 			{
 				id: uuidv4(),
 				name: nameAuthor,
 			},
 		];
 
-		this.setState({
-			mockedAuthorsList: newAuthorsList,
-		});
+		setMockedAuthorsListA(
+			(mockedAuthorsListA) => (mockedAuthorsListA = newAuthorsList)
+		);
 	};
 
-	onAddCourse = (
+	const onAddCourse = (
 		title,
 		description,
 		creationDate,
@@ -72,9 +65,9 @@ class App extends Component {
 		resetCCState
 	) => {
 		const newCoursesList = [
-			...this.state.mockedCoursesList,
+			...mockedCoursesListA,
 			{
-				// переписать- логика формирования объекта курса должна быть внутри компоненты создания курса
+				// переписать - логика формирования объекта курса должна быть внутри компоненты создания курса
 				id: uuidv4(),
 				title: title,
 				description: description,
@@ -84,39 +77,35 @@ class App extends Component {
 			},
 		];
 
-		this.setState({
-			mockedCoursesList: newCoursesList,
-		});
+		setMockedCoursesListA(
+			(mockedCoursesListA) => (mockedCoursesListA = newCoursesList)
+		);
 
-		this.coursesOrAddNewCourse();
+		coursesOrAddNewCourse();
 		resetCCState();
 	};
 
-	render() {
-		const { searchPhrase, mockedCoursesList, mockedAuthorsList, isAddCourse } =
-			this.state;
-		const visibleCourses = this.searchCourse(mockedCoursesList, searchPhrase);
+	const visibleCourses = searchCourse(mockedCoursesListA, searchPhrase);
 
-		return (
-			<div className={'border border-info app'}>
-				<Header name='Ella' />
-				{isAddCourse ? (
-					<CreateCourse
-						mockedAuthorsList={mockedAuthorsList}
-						onAddAuthor={this.onAddAuthor}
-						callbackFunc={this.onAddCourse}
-					/>
-				) : (
-					<Courses
-						mockedCoursesList={visibleCourses}
-						mockedAuthorsList={mockedAuthorsList}
-						onUpdateSearch={this.onUpdateSearch}
-						callbackFunc={this.coursesOrAddNewCourse}
-					/>
-				)}
-			</div>
-		);
-	}
-}
+	return (
+		<div className={'border border-info app'}>
+			<Header name='Ella' />
+			{isAddCourse ? (
+				<CreateCourse
+					mockedAuthorsList={mockedAuthorsListA}
+					onAddAuthor={onAddAuthor}
+					callbackFunc={onAddCourse}
+				/>
+			) : (
+				<Courses
+					mockedCoursesList={visibleCourses}
+					mockedAuthorsList={mockedAuthorsListA}
+					onUpdateSearch={onUpdateSearch}
+					callbackFunc={coursesOrAddNewCourse}
+				/>
+			)}
+		</div>
+	);
+};
 
 export default App;
