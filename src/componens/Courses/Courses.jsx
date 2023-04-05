@@ -1,13 +1,19 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 
 import CourseCard from './components/CourseCard/CourseCard';
 import Button from '../../common/Button/Button';
 import SearchBar from './components/SearchBar/SearchBar';
-// import { mockedCoursesList, mockedAuthorsList } from '../../constants';
+import {
+	mockedCoursesListContext,
+	mockedAuthorsListContext,
+} from '../../constants'; // context
 
 const Courses = (props) => {
-	const mockedCoursesList = props.mockedCoursesList;
-	const mockedAuthorsList = props.mockedAuthorsList;
+	const mockedCoursesList = useContext(mockedCoursesListContext); // context подписка
+	const mockedAuthorsList = useContext(mockedAuthorsListContext); // context
+
+	// const mockedCoursesList = props.mockedCoursesList;
+	// const mockedAuthorsList = props.mockedAuthorsList;
 	const { callbackFunc } = props;
 
 	const [searchPhrase, setSearchPhrase] = useState('');

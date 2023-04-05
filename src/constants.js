@@ -1,4 +1,6 @@
-export const mockedCoursesList = [
+import { createContext } from 'react'; // context
+
+const mockedCoursesList = [
 	{
 		id: 'de5aaa59-90f5-4dbc-b8a9-aaf205c551ba',
 		title: 'JavaScript',
@@ -35,7 +37,7 @@ specimen book.`,
 	},
 ];
 
-export const mockedAuthorsList = [
+const mockedAuthorsList = [
 	{
 		id: '27cc3006-e93a-4748-8ca8-73d06aa93b6d',
 		name: 'Vasiliy Dobkin',
@@ -53,3 +55,12 @@ export const mockedAuthorsList = [
 		name: 'Valentina Larina',
 	},
 ];
+
+export const mockedCoursesListContext = createContext({
+	mockedCoursesList: [...mockedCoursesList],
+}); // context
+
+// export default mockedCoursesListContext;
+export const mockedAuthorsListContext = createContext({
+	mockedAuthorsList: [...mockedAuthorsList],
+});

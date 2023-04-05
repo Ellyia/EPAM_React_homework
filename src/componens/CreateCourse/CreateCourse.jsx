@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
 import pipeDuration from '../../helpers/pipeDuration';
 import dateGeneration from '../../helpers/dateGeneration';
+import { mockedAuthorsListContext } from '../../constants'; // context
 
 const CreateCourse = (props) => {
 	const [name, setName] = useState('');
@@ -13,6 +14,8 @@ const CreateCourse = (props) => {
 	const [title, setTitle] = useState('');
 	const [idshki, setIdshki] = useState([]);
 	const [authorsOfCourse, setAuthorsOfCourse] = useState([]);
+
+	const mockedAuthorsList = useContext(mockedAuthorsListContext); // context
 
 	const resetCCState = () => {
 		setName('');
@@ -231,7 +234,7 @@ const CreateCourse = (props) => {
 							className={'list-group-item'}
 							style={{ margin: 10, padding: 10 }}
 						>
-							{createAuthorsList(props.mockedAuthorsList)}
+							{createAuthorsList(mockedAuthorsList)}
 						</ul>
 					</section>
 
@@ -241,7 +244,7 @@ const CreateCourse = (props) => {
 							className={'list-group-item'}
 							style={{ margin: 10, padding: 10 }}
 						>
-							{createCourseAuthorsList(props.mockedAuthorsList)}
+							{createCourseAuthorsList(mockedAuthorsList)}
 						</ul>
 					</section>
 				</div>

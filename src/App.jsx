@@ -1,19 +1,27 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react'; // context
 
 import Header from './componens/Header/Header';
 import Courses from './componens/Courses/Courses';
 import CreateCourse from './componens/CreateCourse/CreateCourse';
-import { mockedCoursesList, mockedAuthorsList } from './constants';
+import {
+	mockedCoursesListContext,
+	mockedAuthorsListContext,
+} from './constants';
 
 import './App.css';
 
+const { Provider } = mockedCoursesListContext;
+
 const App = () => {
-	const [mockedCoursesListA, setMockedCoursesListA] = useState([
-		...mockedCoursesList,
+	const contextMockedCoursesListA = useContext(mockedCoursesListContext); // context подписка
+	const contextMockedAuthorsListA = useContext(mockedAuthorsListContext); // context подписка
+
+	const [mockedCoursesList, setMockedCoursesListA] = useState([
+		...contextMockedCoursesListA.mockedCoursesList,
 	]);
 
-	const [mockedAuthorsListA, setMockedAuthorsListA] = useState([
-		...mockedAuthorsList,
+	const [mockedAuthorsList, setMockedAuthorsListA] = useState([
+		...contextMockedAuthorsListA.mockedAuthorsList,
 	]);
 
 	const [isAddCourse, setIsAddCourse] = useState(false);
@@ -23,18 +31,18 @@ const App = () => {
 	};
 
 	const onAddAuthor = (author) => {
-		const newAuthorsList = [...mockedAuthorsListA, author];
+		const newAuthorsList = [...mockedAuthorsList, author];
 
 		setMockedAuthorsListA(
-			(mockedAuthorsListA) => (mockedAuthorsListA = newAuthorsList)
+			(mockedAuthorsList) => (mockedAuthorsList = newAuthorsList)
 		);
 	};
 
 	const onAddCourse = (course) => {
-		const newCoursesList = [...mockedCoursesListA, course];
+		const newCoursesList = [...mockedCoursesList, course];
 
 		setMockedCoursesListA(
-			(mockedCoursesListA) => (mockedCoursesListA = newCoursesList)
+			(mockedCoursesList) => (mockedCoursesList = newCoursesList)
 		);
 
 		toggleIsAddCourse();
@@ -42,20 +50,24 @@ const App = () => {
 
 	return (
 		<div className={'app'}>
-			<Header name='Ella' />
-			{isAddCourse ? (
-				<CreateCourse
-					mockedAuthorsList={mockedAuthorsListA}
-					onAddAuthor={onAddAuthor}
-					callbackFunc={onAddCourse}
-				/>
-			) : (
-				<Courses
-					mockedCoursesList={mockedCoursesListA}
-					mockedAuthorsList={mockedAuthorsListA}
-					callbackFunc={toggleIsAddCourse}
-				/>
-			)}
+			<Provider value={mockedCoursesList}>
+				<mockedAuthorsListContext.Provider value={mockedAuthorsList}>
+					<Header name='Ella' />
+					{isAddCourse ? (
+						<CreateCourse
+							// mockedAuthorsList={mockedAuthorsListA}
+							onAddAuthor={onAddAuthor}
+							callbackFunc={onAddCourse}
+						/>
+					) : (
+						<Courses
+							// mockedCoursesList={mockedCoursesListA}
+							// mockedAuthorsList={mockedAuthorsListA}
+							callbackFunc={toggleIsAddCourse}
+						/>
+					)}
+				</mockedAuthorsListContext.Provider>
+			</Provider>
 		</div>
 	);
 };
