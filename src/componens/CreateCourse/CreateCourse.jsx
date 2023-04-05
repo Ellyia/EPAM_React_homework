@@ -23,22 +23,31 @@ const CreateCourse = (props) => {
 		setAuthorsOfCourse([]);
 	};
 
-	const createCourse = (title, description, duration, idshki, resetCCState) => {
-		if (
+	const isFormValid = () => {
+		return (
 			title.length >= 2 &&
 			description.length >= 2 &&
 			duration &&
 			idshki.length > 0
-		) {
+		);
+	};
+
+	const onCreateCourse = (e) => {
+		e.preventDefault();
+
+		if (isFormValid()) {
 			const card = {
 				id: uuidv4(),
 				title: title,
 				description: description,
 				creationDate: dateGeneration(),
-				duration: duration,
+				duration: pipeDuration(duration),
 				authors: idshki,
 			};
-			props.callbackFunc(card, resetCCState);
+
+			resetCCState();
+
+			props.callbackFunc(card);
 		} else {
 			alert('Please, fill in all fields');
 		}
@@ -152,8 +161,6 @@ const CreateCourse = (props) => {
 		}
 	};
 
-	const resultDuration = duration ? pipeDuration(duration) : '00:00';
-
 	return (
 		<main
 			style={{ margin: 10, padding: 20, backgroundColor: 'white' }}
@@ -166,19 +173,7 @@ const CreateCourse = (props) => {
 					onChange={onChangeTitleInput}
 				/>
 				<div style={{ marginTop: 'auto' }}>
-					<Button
-						text='Create course'
-						callbackFunc={(e) => {
-							e.preventDefault();
-							createCourse(
-								title,
-								description,
-								pipeDuration(duration),
-								idshki,
-								resetCCState
-							);
-						}}
-					/>
+					<Button text='Create course' callbackFunc={onCreateCourse} />
 				</div>
 			</div>
 			<div style={{ marginTop: 10 }}>
@@ -226,7 +221,7 @@ const CreateCourse = (props) => {
 							labelText='Duration'
 							type='number' // вводится +
 						/>
-						<p>Duration: {resultDuration} hours</p>
+						<p>Duration: {pipeDuration(duration, '00:00')} hours</p>
 					</div>
 				</div>
 				<div style={{ width: '45%' }}>

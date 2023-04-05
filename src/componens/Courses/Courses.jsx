@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import CourseCard from './components/CourseCard/CourseCard';
 import Button from '../../common/Button/Button';
 import SearchBar from './components/SearchBar/SearchBar';
@@ -6,9 +8,31 @@ import SearchBar from './components/SearchBar/SearchBar';
 const Courses = (props) => {
 	const mockedCoursesList = props.mockedCoursesList;
 	const mockedAuthorsList = props.mockedAuthorsList;
-	const { searchCourse, callbackFunc } = props;
+	const { callbackFunc } = props;
 
-	const cards = mockedCoursesList.map((cardData) => {
+	const [searchPhrase, setSearchPhrase] = useState('');
+
+	const searchCourse = (items, searchPhrase) => {
+		if (searchPhrase?.length === 0) {
+			return items;
+		}
+
+		return items.filter((el) => {
+			const elem = { ...el };
+			const elName = elem.title.toString().toLowerCase();
+			const elId = elem.id;
+			const termLC = searchPhrase.toString().toLowerCase();
+			return elName.indexOf(termLC) > -1 || elId.indexOf(termLC) > -1;
+		});
+	};
+
+	const onUpdateSearch = (searchPhrase) => {
+		setSearchPhrase(searchPhrase);
+	};
+
+	const visibleCourses = searchCourse(mockedCoursesList, searchPhrase);
+
+	const cards = visibleCourses.map((cardData) => {
 		const { id, ...cardProps } = cardData;
 		const authors = cardProps.authors;
 
@@ -39,7 +63,7 @@ const Courses = (props) => {
 				className={'d-flex justify-content-between'}
 				style={{ margin: 10, marginTop: 0 }}
 			>
-				<SearchBar onUpdateSearch={props.onUpdateSearch} />
+				<SearchBar onUpdateSearch={onUpdateSearch} />
 				<Button
 					text={'Add new course'}
 					callbackFunc={(e) => {
