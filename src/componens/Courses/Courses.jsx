@@ -26,18 +26,13 @@ const Courses = (props) => {
 		let authorsStr = authorsArr.join(', ');
 
 		return (
-			<CourseCard
-				key={id}
-				cardProps={cardProps}
-				authorsStr={authorsStr}
-				searchCourse={searchCourse}
-			/>
+			<CourseCard key={id} cardProps={cardProps} authorsStr={authorsStr} />
 		);
 	});
 
 	return (
 		<ul
-			style={{ margin: 10, padding: 10 }}
+			style={{ margin: 10, padding: 20, backgroundColor: 'white' }}
 			className={'border border-info rounded'}
 		>
 			<div

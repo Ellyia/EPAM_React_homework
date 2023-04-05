@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
@@ -22,29 +23,22 @@ const CreateCourse = (props) => {
 		setAuthorsOfCourse([]);
 	};
 
-	const createCourse = (
-		title,
-		description,
-		creationDate,
-		duration,
-		idshki,
-		resetCCState
-	) => {
+	const createCourse = (title, description, duration, idshki, resetCCState) => {
 		if (
 			title.length >= 2 &&
 			description.length >= 2 &&
 			duration &&
-			creationDate &&
 			idshki.length > 0
 		) {
-			props.callbackFunc(
-				title,
-				description,
-				creationDate,
-				duration,
-				idshki,
-				resetCCState
-			);
+			const card = {
+				id: uuidv4(),
+				title: title,
+				description: description,
+				creationDate: dateGeneration(),
+				duration: duration,
+				authors: idshki,
+			};
+			props.callbackFunc(card, resetCCState);
 		} else {
 			alert('Please, fill in all fields');
 		}
@@ -102,7 +96,13 @@ const CreateCourse = (props) => {
 	};
 
 	const createAuthor = (name) => {
-		if (name.length >= 2) props.onAddAuthor(name);
+		if (name.length >= 2) {
+			const author = {
+				id: uuidv4(),
+				name: name,
+			};
+			props.onAddAuthor(author);
+		}
 	};
 
 	const createAuthorsList = (data) => {
@@ -156,7 +156,7 @@ const CreateCourse = (props) => {
 
 	return (
 		<main
-			style={{ margin: 10, padding: 10 }}
+			style={{ margin: 10, padding: 20, backgroundColor: 'white' }}
 			className={'border border-info rounded'}
 		>
 			<div className={'d-flex justify-content-between'}>
@@ -173,7 +173,6 @@ const CreateCourse = (props) => {
 							createCourse(
 								title,
 								description,
-								dateGeneration(),
 								pipeDuration(duration),
 								idshki,
 								resetCCState
@@ -193,7 +192,7 @@ const CreateCourse = (props) => {
 				/>
 			</div>
 			<div
-				className={'d-flex justify-content-between border border-info rounded'}
+				className={'d-flex justify-content-between'}
 				style={{ marginTop: 10, padding: 10 }}
 			>
 				<div style={{ width: '45%' }}>

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 
 import Header from './componens/Header/Header';
 import Courses from './componens/Courses/Courses';
@@ -34,48 +33,24 @@ const App = () => {
 	};
 
 	const onUpdateSearch = (searchPhrase) => {
-		setSearchPhrase(searchPhrase); // ? чи важливе минуле значення ?
+		setSearchPhrase(searchPhrase);
 	};
 
 	const coursesOrAddNewCourse = () => {
 		setIsAddCourse((isAddCourse) => (isAddCourse = !isAddCourse));
-		setSearchPhrase((searchPhrase) => (searchPhrase = '')); // чи так записується із минулим значенням ?
+		setSearchPhrase((searchPhrase) => (searchPhrase = ''));
 	};
 
-	const onAddAuthor = (nameAuthor) => {
-		const newAuthorsList = [
-			...mockedAuthorsListA,
-			{
-				id: uuidv4(),
-				name: nameAuthor,
-			},
-		];
+	const onAddAuthor = (author) => {
+		const newAuthorsList = [...mockedAuthorsListA, author];
 
 		setMockedAuthorsListA(
 			(mockedAuthorsListA) => (mockedAuthorsListA = newAuthorsList)
 		);
 	};
 
-	const onAddCourse = (
-		title,
-		description,
-		creationDate,
-		duration,
-		idshki,
-		resetCCState
-	) => {
-		const newCoursesList = [
-			...mockedCoursesListA,
-			{
-				// переписать - логика формирования объекта курса должна быть внутри компоненты создания курса
-				id: uuidv4(),
-				title: title,
-				description: description,
-				creationDate: creationDate,
-				duration: duration,
-				authors: idshki,
-			},
-		];
+	const onAddCourse = (course, resetCCState) => {
+		const newCoursesList = [...mockedCoursesListA, course];
 
 		setMockedCoursesListA(
 			(mockedCoursesListA) => (mockedCoursesListA = newCoursesList)
@@ -88,7 +63,7 @@ const App = () => {
 	const visibleCourses = searchCourse(mockedCoursesListA, searchPhrase);
 
 	return (
-		<div className={'border border-info app'}>
+		<div className={'app'}>
 			<Header name='Ella' />
 			{isAddCourse ? (
 				<CreateCourse

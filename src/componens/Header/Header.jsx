@@ -4,7 +4,7 @@ import Button from '../../common/Button/Button.jsx';
 const Header = ({ name }) => {
 	return (
 		<header
-			style={{ margin: 10, padding: 20 }}
+			style={{ margin: 10, padding: 20, backgroundColor: 'white' }}
 			className={'d-flex justify-content-between border border-info rounded'}
 		>
 			<Logo />
