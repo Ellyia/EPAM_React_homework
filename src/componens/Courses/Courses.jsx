@@ -1,19 +1,22 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, createContext } from 'react';
 
 import CourseCard from './components/CourseCard/CourseCard';
 import Button from '../../common/Button/Button';
 import SearchBar from './components/SearchBar/SearchBar';
-import {
-	mockedCoursesListContext,
-	mockedAuthorsListContext,
-} from '../../constants'; // context
+import { mockedCoursesList, mockedAuthorsList } from '../../constants';
+
+export const mockedCoursesListContext = createContext({
+	mockedCoursesList: [...mockedCoursesList],
+});
+
+export const mockedAuthorsListContext = createContext({
+	mockedAuthorsList: [...mockedAuthorsList],
+});
 
 const Courses = (props) => {
-	const mockedCoursesList = useContext(mockedCoursesListContext); // context подписка
-	const mockedAuthorsList = useContext(mockedAuthorsListContext); // context
+	const mockedCoursesList = useContext(mockedCoursesListContext);
+	const mockedAuthorsList = useContext(mockedAuthorsListContext);
 
-	// const mockedCoursesList = props.mockedCoursesList;
-	// const mockedAuthorsList = props.mockedAuthorsList;
 	const { callbackFunc } = props;
 
 	const [searchPhrase, setSearchPhrase] = useState('');
@@ -42,18 +45,10 @@ const Courses = (props) => {
 		const { id, ...cardProps } = cardData;
 		const authors = cardProps.authors;
 
-		let authorsArr = [];
-
-		authors.map((item) => {
-			mockedAuthorsList.map((elem) => {
-				// use filter
-				if (elem.id && item === elem.id) {
-					authorsArr.push(elem.name);
-				}
-			});
-		});
-
-		let authorsStr = authorsArr.join(', ');
+		let authorsStr = mockedAuthorsList
+			.filter((author) => authors.includes(author.id))
+			.map((x) => x.name)
+			.join(', ');
 
 		return (
 			<CourseCard key={id} cardProps={cardProps} authorsStr={authorsStr} />

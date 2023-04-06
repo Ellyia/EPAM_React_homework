@@ -6,15 +6,13 @@ import CreateCourse from './componens/CreateCourse/CreateCourse';
 import {
 	mockedCoursesListContext,
 	mockedAuthorsListContext,
-} from './constants';
+} from './componens/Courses/Courses';
 
 import './App.css';
 
-const { Provider } = mockedCoursesListContext;
-
 const App = () => {
-	const contextMockedCoursesListA = useContext(mockedCoursesListContext); // context подписка
-	const contextMockedAuthorsListA = useContext(mockedAuthorsListContext); // context подписка
+	const contextMockedCoursesListA = useContext(mockedCoursesListContext);
+	const contextMockedAuthorsListA = useContext(mockedAuthorsListContext);
 
 	const [mockedCoursesList, setMockedCoursesListA] = useState([
 		...contextMockedCoursesListA.mockedCoursesList,
@@ -50,24 +48,19 @@ const App = () => {
 
 	return (
 		<div className={'app'}>
-			<Provider value={mockedCoursesList}>
+			<mockedCoursesListContext.Provider value={mockedCoursesList}>
 				<mockedAuthorsListContext.Provider value={mockedAuthorsList}>
 					<Header name='Ella' />
 					{isAddCourse ? (
 						<CreateCourse
-							// mockedAuthorsList={mockedAuthorsListA}
 							onAddAuthor={onAddAuthor}
 							callbackFunc={onAddCourse}
 						/>
 					) : (
-						<Courses
-							// mockedCoursesList={mockedCoursesListA}
-							// mockedAuthorsList={mockedAuthorsListA}
-							callbackFunc={toggleIsAddCourse}
-						/>
+						<Courses callbackFunc={toggleIsAddCourse} />
 					)}
 				</mockedAuthorsListContext.Provider>
-			</Provider>
+			</mockedCoursesListContext.Provider>
 		</div>
 	);
 };
