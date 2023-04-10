@@ -1,15 +1,14 @@
 import Logo from './components/Logo/Logo.jsx';
 import Button from '../../common/Button/Button.jsx';
 
+import styles from './Header.module.css';
+
 const Header = ({ name }) => {
 	return (
-		<header
-			style={{ margin: 10, padding: 20, backgroundColor: 'white' }}
-			className={'d-flex justify-content-between border border-info rounded'}
-		>
+		<header className={styles.header}>
 			<Logo />
-			<div className={'d-flex align-items-center'}>
-				<div style={{ marginRight: 10 }}>{name}</div>
+			<div className={styles.flex}>
+				<div className={styles.marginRight}>{name}</div>
 				<Button text='Logout' />
 			</div>
 		</header>

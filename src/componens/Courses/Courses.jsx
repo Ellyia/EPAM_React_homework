@@ -5,6 +5,8 @@ import Button from '../../common/Button/Button';
 import SearchBar from './components/SearchBar/SearchBar';
 import { mockedCoursesList, mockedAuthorsList } from '../../constants';
 
+import styles from './Courses.module.css';
+
 export const mockedCoursesListContext = createContext({
 	mockedCoursesList: [...mockedCoursesList],
 });
@@ -13,11 +15,9 @@ export const mockedAuthorsListContext = createContext({
 	mockedAuthorsList: [...mockedAuthorsList],
 });
 
-const Courses = (props) => {
+const Courses = ({ callbackFunc }) => {
 	const mockedCoursesList = useContext(mockedCoursesListContext);
 	const mockedAuthorsList = useContext(mockedAuthorsListContext);
-
-	const { callbackFunc } = props;
 
 	const [searchPhrase, setSearchPhrase] = useState('');
 
@@ -56,10 +56,7 @@ const Courses = (props) => {
 	});
 
 	return (
-		<ul
-			style={{ margin: 10, padding: 20, backgroundColor: 'white' }}
-			className={'border border-info rounded'}
-		>
+		<ul className={styles.main}>
 			<div
 				className={'d-flex justify-content-between'}
 				style={{ margin: 10, marginTop: 0 }}

@@ -1,17 +1,22 @@
-const Input = (props) => {
-	const { placeholdetText, onChange, htmlFor, labelText, type, notRequired } =
-		props;
+import styles from './Input.module.css';
 
+const Input = ({
+	placeholdetText,
+	onChange,
+	htmlFor,
+	labelText,
+	type,
+	notRequired,
+}) => {
 	const req = notRequired ? notRequired : true;
 
 	return (
-		<label htmlFor={htmlFor} style={{ marginRight: 10 }}>
+		<label htmlFor={htmlFor} className={styles.label}>
 			{labelText}
 			<input
-				// type='text'
+				className={styles.inputBasis}
 				type={type ? type : 'text'}
 				id={htmlFor}
-				className='form-control search-input'
 				onChange={onChange}
 				placeholder={placeholdetText}
 				required={req}

@@ -7,7 +7,9 @@ import pipeDuration from '../../helpers/pipeDuration';
 import dateGeneration from '../../helpers/dateGeneration';
 import { mockedAuthorsListContext } from '../Courses/Courses';
 
-const CreateCourse = (props) => {
+import styles from './CreateCourse.module.css';
+
+const CreateCourse = ({ callbackFunc, onAddAuthor }) => {
 	const [name, setName] = useState('');
 	const [duration, setDuration] = useState('');
 	const [description, setDescription] = useState('');
@@ -50,7 +52,7 @@ const CreateCourse = (props) => {
 
 			resetCCState();
 
-			props.callbackFunc(card);
+			callbackFunc(card);
 		} else {
 			alert('Please, fill in all fields');
 		}
@@ -113,7 +115,7 @@ const CreateCourse = (props) => {
 				id: uuidv4(),
 				name: name,
 			};
-			props.onAddAuthor(author);
+			onAddAuthor(author);
 		}
 	};
 
@@ -123,8 +125,8 @@ const CreateCourse = (props) => {
 				const isInclude = idshki.some((item) => item === id);
 				if (!isInclude) {
 					return (
-						<li key={id} className={'d-flex'}>
-							<p style={{ width: '60%' }}>{name}</p>
+						<li key={id} className={styles.li}>
+							<p className={styles.author}>{name}</p>
 							<Button
 								text='Add author'
 								callbackFunc={(e) => {
@@ -145,8 +147,8 @@ const CreateCourse = (props) => {
 		if (authorsOfCourse.length !== 0) {
 			const list = authorsOfCourse.map(({ id, name }) => {
 				return (
-					<li key={id} className={'d-flex'}>
-						<p style={{ width: '60%' }}>{name}</p>
+					<li key={id} className={styles.li}>
+						<p className={styles.author}>{name}</p>
 						<Button
 							text='Delete author'
 							callbackFunc={(e) => {
@@ -165,37 +167,31 @@ const CreateCourse = (props) => {
 	};
 
 	return (
-		<main
-			style={{ margin: 10, padding: 20, backgroundColor: 'white' }}
-			className={'border border-info rounded'}
-		>
-			<div className={'d-flex justify-content-between'}>
+		<main className={styles.main}>
+			<div className={styles.title}>
 				<Input
 					placeholdetText='Enter title...'
 					labelText='Title'
 					onChange={onChangeTitleInput}
 				/>
-				<div style={{ marginTop: 'auto' }}>
+				<div className={styles.btnCreateCourse}>
 					<Button text='Create course' callbackFunc={onCreateCourse} />
 				</div>
 			</div>
-			<div style={{ marginTop: 10 }}>
+			<div className={styles.descr}>
 				<label htmlFor='description'>Description</label>
 				<textarea
-					style={{ width: '100%', padding: '10px 20px' }}
+					className={styles.textarea}
 					placeholder='Enter description'
 					onChange={onChangeDescrInput}
 					id='description'
 					minLength='2'
 				/>
 			</div>
-			<div
-				className={'d-flex justify-content-between'}
-				style={{ marginTop: 10, padding: 10 }}
-			>
-				<div style={{ width: '45%' }}>
-					<div className={'d-flex flex-column'}>
-						<h4 className={'align-self-center'}>Add author</h4>
+			<div className={styles.wrapper}>
+				<div className={styles.leftBlock}>
+					<div className={styles.addAuthor}>
+						<h4 className={styles.alSelfCenter}>Add author</h4>
 						<Input
 							placeholdetText='Enter author name...'
 							onChange={onChangeNameInput}
@@ -204,7 +200,7 @@ const CreateCourse = (props) => {
 							htmlFor='authorName'
 							labelText='Author name'
 						/>
-						<div className={'align-self-center'}>
+						<div className={styles.authorBtn}>
 							<Button
 								text='Create author'
 								callbackFunc={(e) => {
@@ -214,8 +210,8 @@ const CreateCourse = (props) => {
 							/>
 						</div>
 					</div>
-					<div style={{ marginTop: 50 }} className={'d-flex flex-column'}>
-						<h4 className={'align-self-center'}>Duration</h4>
+					<div className={styles.duration}>
+						<h4 className={styles.alSelfCenter}>Duration</h4>
 						<Input
 							placeholdetText='Enter duration in minutes...'
 							onChange={onChangeDurationInput}
@@ -227,25 +223,15 @@ const CreateCourse = (props) => {
 						<p>Duration: {pipeDuration(duration, '00:00')} hours</p>
 					</div>
 				</div>
-				<div style={{ width: '45%' }}>
+				<div className={styles.authors}>
 					<section>
-						<h4 style={{ textAlign: 'center' }}>Authors</h4>
-						<ul
-							className={'list-group-item'}
-							style={{ margin: 10, padding: 10 }}
-						>
-							{createAuthorsList(mockedAuthorsList)}
-						</ul>
+						<h4 className={styles.textAlCenter}>Authors</h4>
+						<ul>{createAuthorsList(mockedAuthorsList)}</ul>
 					</section>
 
 					<section>
-						<h4 style={{ textAlign: 'center' }}>Course authors</h4>
-						<ul
-							className={'list-group-item'}
-							style={{ margin: 10, padding: 10 }}
-						>
-							{createCourseAuthorsList(mockedAuthorsList)}
-						</ul>
+						<h4 className={styles.textAlCenter}>Course authors</h4>
+						<ul>{createCourseAuthorsList(mockedAuthorsList)}</ul>
 					</section>
 				</div>
 			</div>

@@ -1,8 +1,9 @@
+import styles from './Button.module.css';
+
 const Button = ({ text, callbackFunc }) => {
 	return (
 		<button
-			className={'btn btn-outline-primary'}
-			style={{ width: 160 }}
+			className={styles.btnBasis}
 			onClick={callbackFunc}
 			type='submit'
 			// type={type}

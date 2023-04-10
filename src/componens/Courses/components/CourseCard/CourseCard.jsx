@@ -1,21 +1,17 @@
 import Button from '../../../../common/Button/Button';
 
-const CourseCard = (props) => {
-	const { cardProps, authorsStr } = props;
+import styles from './CourseCard.module.css';
+
+const CourseCard = ({ cardProps, authorsStr }) => {
 	const { title, description, duration, creationDate } = cardProps;
 
 	return (
-		<li
-			className={
-				'list-group-item d-flex justify-content-between border border-info'
-			}
-			style={{ margin: 10, padding: 10 }}
-		>
-			<div style={{ width: '60%' }}>
+		<li className={styles.li}>
+			<div className={styles.descr}>
 				<h4>{title}</h4>
 				<p>{description}</p>
 			</div>
-			<div style={{ width: '30%' }}>
+			<div className={styles.info}>
 				<p>
 					{' '}
 					<b>Authors:</b> {authorsStr}

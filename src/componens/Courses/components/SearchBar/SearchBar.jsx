@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Input from '../../../../common/Input/Input';
 import Button from '../../../../common/Button/Button';
 
-const SearchBar = (props) => {
+const SearchBar = ({ onUpdateSearch }) => {
 	const [searchPhrase, setSearchPhrase] = useState('');
 
 	const onChangeSearchInput = (e) => {
@@ -11,12 +11,12 @@ const SearchBar = (props) => {
 		setSearchPhrase(searchPhrase);
 
 		if (!searchPhrase) {
-			props.onUpdateSearch(searchPhrase);
+			onUpdateSearch(searchPhrase);
 		}
 	};
 
 	const onSearchInput = (searchPhrase) => {
-		props.onUpdateSearch(searchPhrase);
+		onUpdateSearch(searchPhrase);
 	};
 
 	return (

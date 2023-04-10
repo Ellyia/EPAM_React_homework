@@ -1,0 +1,73 @@
+.main {
+  margin: 10px;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid rgb(110, 200, 252);
+  border-radius: 5px;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+}
+
+.btnCreateCourse {
+  margin-top: auto;
+}
+
+.descr {
+  margin-top: 20px;
+}
+
+.textarea {
+  width: 100%;
+  padding: 10px 20px;
+}
+
+.wrapper {
+  margin-top: 10px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.addAuthor {
+  display: flex;
+  flex-direction: column;
+}
+
+.leftBlock {
+  width: 45%;
+}
+
+.alSelfCenter {
+  align-self: center;
+}
+
+.authorBtn {
+  align-self: center;
+  margin-top: 10px;
+}
+
+.duration {
+  display: flex;
+  flex-direction: column;
+  margin-top: 40px;
+}
+
+.authors {
+  width: 45%;
+}
+
+.textAlCenter {
+  text-align: center;
+}
+
+.author {
+  width: 60%;
+}
+
+.li {
+  display: flex;
+  margin-bottom: 10px;
+}
