@@ -6,7 +6,6 @@ const Button = ({ text, callbackFunc }) => {
 			className={styles.btnBasis}
 			onClick={callbackFunc}
 			type='submit'
-			// type={type}
 		>
 			{text}
 		</button>

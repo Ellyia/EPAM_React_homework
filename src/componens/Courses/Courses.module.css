@@ -5,3 +5,14 @@
   border: 1px solid rgb(110, 200, 252);
   border-radius: 5px;
 }
+
+.courses {
+  padding: 0;
+  background-color: #fff;
+}
+
+.searchPanel {
+  margin: 0 10px 10px;
+  display: flex;
+  justify-content: space-between;
+}
