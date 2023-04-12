@@ -1,12 +1,6 @@
 import styles from './Input.module.css';
 
-const Input = ({
-	placeholdetText,
-	onChange,
-	htmlFor,
-	labelText,
-	type,
-}) => {
+const Input = ({ placeholdetText, onChange, htmlFor, labelText, type }) => {
 	return (
 		<label htmlFor={htmlFor} className={styles.label}>
 			{labelText}
