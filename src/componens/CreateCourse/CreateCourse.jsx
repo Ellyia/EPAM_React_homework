@@ -1,4 +1,4 @@
-import { useState, useContext, useCallback } from 'react';
+import { useContext, useCallback, useReducer } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import Input from '../../common/Input/Input';
@@ -6,36 +6,32 @@ import Button from '../../common/Button/Button';
 import pipeDuration from '../../helpers/pipeDuration';
 import dateGeneration from '../../helpers/dateGeneration';
 import { mockedListsContext } from '../../context';
+import reducer from './reducer';
 
 import styles from './CreateCourse.module.css';
 
 const CreateCourse = ({ callbackFunc, onAddAuthor }) => {
-	const [name, setName] = useState('');
-	const [duration, setDuration] = useState('');
-	const [description, setDescription] = useState('');
-	const [title, setTitle] = useState('');
-	const [idshki, setIdshki] = useState([]);
-	const [authorsOfCourse, setAuthorsOfCourse] = useState([]);
-
 	const mockedLists = useContext(mockedListsContext);
 
-	const resetCCState = () => {
-		setName('');
-		setDuration('');
-		setDescription('');
-		setTitle('');
-		setIdshki([]);
-		setAuthorsOfCourse([]);
+	const stateInit = {
+		name: '',
+		duration: '',
+		description: '',
+		title: '',
+		idshki: [],
+		authorsOfCourse: [],
 	};
+
+	const [stateForNewCourse, dispatch] = useReducer(reducer, stateInit);
 
 	const isFormValid = useCallback(() => {
 		return (
-			title.length >= 2 &&
-			description.length >= 2 &&
-			duration &&
-			idshki.length > 0
+			stateForNewCourse.title.length >= 2 &&
+			stateForNewCourse.description.length >= 2 &&
+			stateForNewCourse.duration &&
+			stateForNewCourse.idshki.length > 0
 		);
-	}, [title, description, duration, idshki]);
+	}, [stateForNewCourse]);
 
 	const onCreateCourse = useCallback(
 		(e) => {
@@ -44,114 +40,56 @@ const CreateCourse = ({ callbackFunc, onAddAuthor }) => {
 			if (isFormValid()) {
 				const card = {
 					id: uuidv4(),
-					title: title,
-					description: description,
+					title: stateForNewCourse.title,
+					description: stateForNewCourse.description,
 					creationDate: dateGeneration(),
-					duration: pipeDuration(duration),
-					authors: idshki,
+					duration: pipeDuration(stateForNewCourse.duration),
+					authors: stateForNewCourse.idshki, // authorsOfCourse.map(x => x.id),
 				};
-
-				resetCCState();
 
 				callbackFunc(card);
 			} else {
 				alert('Please, fill in all fields');
 			}
 		},
-		[isFormValid, callbackFunc, title, description, duration, idshki]
+		[isFormValid, callbackFunc, stateForNewCourse]
 	);
-
-	const addAuthorToCourseFromAutorsList = useCallback(
-		(etId, arr) => {
-			const autorsList = arr.filter((item) => {
-				if (item.id === etId) {
-					const arrAuthorsOfCourse = [...authorsOfCourse, item];
-					const arridshki = [...idshki, etId];
-
-					setIdshki(arridshki);
-					setAuthorsOfCourse(arrAuthorsOfCourse);
-
-					return item;
-				}
-			});
-
-			return autorsList;
-		},
-		[authorsOfCourse, idshki]
-	);
-
-	const onAuthorAdd = useCallback(
-		(e, id, data) => {
-			e.preventDefault();
-			addAuthorToCourseFromAutorsList(id, data);
-		},
-		[addAuthorToCourseFromAutorsList]
-	);
-
-	const deletAuthorFromCourseAuthors = useCallback(
-		(etId) => {
-			const arrAuthorsOfCourse = [...authorsOfCourse].filter(
-				({ id }) => id !== etId
-			);
-
-			const arridshki = [...idshki].filter((item) => item !== etId);
-
-			setIdshki(arridshki);
-			setAuthorsOfCourse(arrAuthorsOfCourse);
-		},
-		[authorsOfCourse, idshki]
-	);
-
-	const onChangeNameInput = useCallback((e) => {
-		const name = e.target.value;
-		setName(name);
-	}, []);
-
-	const onChangeDurationInput = useCallback((e) => {
-		if (e.target.value.match(/^0/)) {
-			e.target.value = null;
-		} else {
-			const duration = e.target.value;
-			setDuration(duration);
-		}
-	}, []);
-
-	const onChangeTitleInput = useCallback((e) => {
-		const title = e.target.value;
-		setTitle(title);
-	}, []);
-
-	const onChangeDescrInput = useCallback((e) => {
-		const description = e.target.value;
-		setDescription(description);
-	}, []);
 
 	const onCreateAuthor = useCallback(
 		(e) => {
 			e.preventDefault();
-			if (name.length >= 2) {
+			if (stateForNewCourse.name.length >= 2) {
 				const author = {
 					id: uuidv4(),
-					name: name,
+					name: stateForNewCourse.name,
 				};
 				onAddAuthor(author);
 			}
 		},
-		[name, onAddAuthor]
+		[stateForNewCourse.name, onAddAuthor]
 	);
 
 	const createAuthorsList = useCallback(
 		(data) => {
 			const authorsList = data
 				.map(({ id, name }) => {
-					const isInclude = idshki.some((item) => item === id);
+					const isInclude = stateForNewCourse.idshki.some(
+						(item) => item === id
+					);
 					if (!isInclude) {
 						return (
 							<li key={id} className={styles.li}>
 								<p className={styles.author}>{name}</p>
 								<Button
 									text='Add author'
-									callbackFunc={(e) => onAuthorAdd(e, id, data)}
+									callbackFunc={(e) =>
+										dispatch({
+											type: 'addAuthor',
+											event: e,
+											authorId: id,
+											allAuthors: data,
+										})
+									}
 								/>
 							</li>
 						);
@@ -161,27 +99,21 @@ const CreateCourse = ({ callbackFunc, onAddAuthor }) => {
 
 			return authorsList;
 		},
-		[idshki, onAuthorAdd]
-	);
-
-	const onDeleteAuthor = useCallback(
-		(e, id) => {
-			e.preventDefault();
-			deletAuthorFromCourseAuthors(id);
-		},
-		[deletAuthorFromCourseAuthors]
+		[stateForNewCourse.idshki]
 	);
 
 	const createCourseAuthorsList = useCallback(
 		(data) => {
-			if (authorsOfCourse.length !== 0) {
-				const list = authorsOfCourse.map(({ id, name }) => {
+			if (stateForNewCourse.authorsOfCourse.length !== 0) {
+				const list = stateForNewCourse.authorsOfCourse.map(({ id, name }) => {
 					return (
 						<li key={id} className={styles.li}>
 							<p className={styles.author}>{name}</p>
 							<Button
 								text='Delete author'
-								callbackFunc={(e) => onDeleteAuthor(e, id)}
+								callbackFunc={(e) =>
+									dispatch({ type: 'deleteAuthor', event: e, authorId: id })
+								}
 							/>
 						</li>
 					);
@@ -192,7 +124,7 @@ const CreateCourse = ({ callbackFunc, onAddAuthor }) => {
 				return <p>Author list is empty</p>;
 			}
 		},
-		[authorsOfCourse, onDeleteAuthor]
+		[stateForNewCourse.authorsOfCourse]
 	);
 
 	return (
@@ -201,30 +133,36 @@ const CreateCourse = ({ callbackFunc, onAddAuthor }) => {
 				<Input
 					placeholdetText='Enter title...'
 					labelText='Title'
-					onChange={onChangeTitleInput}
+					onChange={(e) => dispatch({ type: 'title', value: e.target.value })}
 				/>
 				<div className={styles.btnCreateCourse}>
 					<Button text='Create course' callbackFunc={onCreateCourse} />
 				</div>
 			</div>
+
 			<div className={styles.descr}>
 				<label htmlFor='description'>Description</label>
 				<textarea
 					className={styles.textarea}
 					placeholder='Enter description'
-					onChange={onChangeDescrInput}
+					onChange={(e) =>
+						dispatch({ type: 'description', value: e.target.value })
+					}
 					id='description'
 					minLength='2'
 				/>
 			</div>
+
 			<div className={styles.wrapper}>
 				<div className={styles.leftBlock}>
 					<div className={styles.addAuthor}>
 						<h4 className={styles.alSelfCenter}>Add author</h4>
 						<Input
 							placeholdetText='Enter author name...'
-							onChange={onChangeNameInput}
-							value={name}
+							onChange={(e) =>
+								dispatch({ type: 'name', value: e.target.value })
+							}
+							value={stateForNewCourse.name}
 							minLength={2}
 							htmlFor='authorName'
 							labelText='Author name'
@@ -236,19 +174,26 @@ const CreateCourse = ({ callbackFunc, onAddAuthor }) => {
 							/>
 						</div>
 					</div>
+
 					<div className={styles.duration}>
 						<h4 className={styles.alSelfCenter}>Duration</h4>
 						<Input
 							placeholdetText='Enter duration in minutes...'
-							onChange={onChangeDurationInput}
-							value={duration}
+							onChange={(e) =>
+								dispatch({ type: 'duration', value: e.target.value })
+							}
+							value={stateForNewCourse.duration}
 							htmlFor='duration'
 							labelText='Duration'
 							type='number' // вводится +
 						/>
-						<p>Duration: {pipeDuration(duration, '00:00')} hours</p>
+						<p>
+							Duration: {pipeDuration(stateForNewCourse.duration, '00:00')}{' '}
+							hours
+						</p>
 					</div>
 				</div>
+
 				<div className={styles.authors}>
 					<section>
 						<h4 className={styles.textAlCenter}>Authors</h4>
