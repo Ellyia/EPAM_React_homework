@@ -1,4 +1,5 @@
 import { useState, useContext, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 
 import CourseCard from './components/CourseCard/CourseCard';
 import Button from '../../common/Button/Button';
@@ -49,22 +50,25 @@ const Courses = ({ callbackFunc }) => {
 		};
 	});
 
-	const onAddNewCourse = useCallback(
-		(e) => {
-			e.preventDefault();
-			callbackFunc();
-		},
-		[callbackFunc]
-	);
+	// const onAddNewCourse = useCallback(
+	// 	(e) => {
+	// 		// e.preventDefault();
+	// 		callbackFunc();
+	// 	},
+	// 	[callbackFunc]
+	// );
 
 	return (
 		<div className={styles.main}>
 			<div className={styles.searchPanel}>
 				<SearchBar onUpdateSearch={onUpdateSearch} />
-				<Button
-					text={'Add new course'}
-					callbackFunc={(e) => onAddNewCourse(e)}
-				/>
+				<Link to='createCourse'>
+					<Button
+						text={'Add new course'}
+						// callbackFunc={(e) => onAddNewCourse(e)}
+						callbackFunc={callbackFunc}
+					/>
+				</Link>
 			</div>
 			<ul className={styles.courses}>
 				{cards.map(({ id, cardProps, authorsStr }) => (

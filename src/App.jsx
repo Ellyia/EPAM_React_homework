@@ -1,8 +1,10 @@
 import { useState, useContext, useCallback } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import Header from './componens/Header/Header';
 import Courses from './componens/Courses/Courses';
 import CreateCourse from './componens/CreateCourse/CreateCourse';
+import Registration from './componens/Registration/Registration';
 import { mockedListsContext } from './context';
 
 import './App.css';
@@ -18,11 +20,11 @@ const App = () => {
 		...mockedLists.mockedAuthorsList,
 	]);
 
-	const [isAddCourse, setIsAddCourse] = useState(false);
+	// const [isAddCourse, setIsAddCourse] = useState(false);
 
-	const toggleIsAddCourse = useCallback(() => {
-		setIsAddCourse((isAddCourse) => (isAddCourse = !isAddCourse));
-	}, []);
+	// const toggleIsAddCourse = useCallback(() => {
+	// 	setIsAddCourse((isAddCourse) => (isAddCourse = !isAddCourse));
+	// }, []);
 
 	const onAddAuthor = useCallback(
 		(author) => {
@@ -43,9 +45,9 @@ const App = () => {
 				(mockedCoursesList) => (mockedCoursesList = newCoursesList)
 			);
 
-			toggleIsAddCourse();
+			// toggleIsAddCourse();
 		},
-		[mockedCoursesList, toggleIsAddCourse]
+		[mockedCoursesList]
 	);
 
 	const value = {
@@ -55,14 +57,28 @@ const App = () => {
 
 	return (
 		<div className={'app'}>
-			<mockedListsContext.Provider value={value}>
-				<Header name='Ella' />
-				{isAddCourse ? (
-					<CreateCourse onAddAuthor={onAddAuthor} callbackFunc={onAddCourse} />
-				) : (
-					<Courses callbackFunc={toggleIsAddCourse} />
-				)}
-			</mockedListsContext.Provider>
+			<Router>
+				<mockedListsContext.Provider value={value}>
+					<Header name='Ella' />
+					{/* {isAddCourse ? ( */}
+					<Routes>
+						<Route exact path='/' element={<Registration />}></Route>
+						<Route exact path='/courses' element={<Courses />}></Route>
+						{/* ) : ( */}
+						<Route
+							exact
+							path='/createCourse'
+							element={
+								<CreateCourse
+									onAddAuthor={onAddAuthor}
+									callbackFunc={onAddCourse}
+								/>
+							}
+						></Route>
+					</Routes>
+					{/* )} */}
+				</mockedListsContext.Provider>
+			</Router>
 		</div>
 	);
 };

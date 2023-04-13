@@ -1,5 +1,6 @@
 import { useContext, useCallback, useReducer } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { Link } from 'react-router-dom';
 
 import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
@@ -35,7 +36,7 @@ const CreateCourse = ({ callbackFunc, onAddAuthor }) => {
 
 	const onCreateCourse = useCallback(
 		(e) => {
-			e.preventDefault();
+			// e.preventDefault();
 
 			if (isFormValid()) {
 				const card = {
@@ -49,6 +50,8 @@ const CreateCourse = ({ callbackFunc, onAddAuthor }) => {
 
 				callbackFunc(card);
 			} else {
+				// e.preventDefault();
+
 				alert('Please, fill in all fields');
 			}
 		},
@@ -136,7 +139,9 @@ const CreateCourse = ({ callbackFunc, onAddAuthor }) => {
 					onChange={(e) => dispatch({ type: 'title', value: e.target.value })}
 				/>
 				<div className={styles.btnCreateCourse}>
-					<Button text='Create course' callbackFunc={onCreateCourse} />
+					<Link to='/courses'>
+						<Button text='Create course' callbackFunc={onCreateCourse} />
+					</Link>
 				</div>
 			</div>
 
