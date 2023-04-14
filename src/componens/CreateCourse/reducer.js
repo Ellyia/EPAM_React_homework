@@ -10,54 +10,29 @@ import {
 function reducer(state, action) {
   switch (action.type) {
     case ACTION_NAME:
-      return { ...state, name: action.value };
+      return { ...state, name: action.payload };
 
-    case ACTION_DURATION: // this
-      if (action.value.match(/^0/)) {
-        action.value = null;
-      } else {
-        return { ...state, duration: action.value };
-      }
-      break; //
+    case ACTION_DURATION:
+      return { ...state, duration: action.payload };
 
     case ACTION_DESCRIPTION:
-      return { ...state, description: action.value };
+      return { ...state, description: action.payload };
 
     case ACTION_TITLE:
-      return { ...state, title: action.value };
+      return { ...state, title: action.payload };
 
-    case ACTION_DELETEAUTHOR: // this
-      action.event.preventDefault();
-      const arrAuthorsOfCourse = [...state.authorsOfCourse].filter(
-        ({ id }) => id !== action.authorId
-      );
-
-      const arridshki = [...state.idshki].filter(
-        (item) => item !== action.authorId
-      ); //
-
+    case ACTION_DELETEAUTHOR:
       return {
         ...state,
-        idshki: arridshki,
-        authorsOfCourse: arrAuthorsOfCourse,
+        idshki: action.payload.arrid,
+        authorsOfCourse: action.payload.arrCourseAuthors,
       };
 
-    case ACTION_ADDAUTHOR: // this
-      action.event.preventDefault();
-      const arrAuthorsCourse = [...state.authorsOfCourse];
-      const arrIdshki = [...state.idshki];
-
-      action.allAuthors.map((item) => {
-        if (item.id === action.authorId) {
-          arrAuthorsCourse.push(item);
-          arrIdshki.push(item.id);
-        }
-      }); //
-
+    case ACTION_ADDAUTHOR:
       return {
         ...state,
-        idshki: arrIdshki,
-        authorsOfCourse: arrAuthorsCourse,
+        idshki: action.payload.arrid,
+        authorsOfCourse: action.payload.arrCourseAuthors,
       };
 
     default:

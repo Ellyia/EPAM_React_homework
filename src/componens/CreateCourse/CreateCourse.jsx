@@ -8,17 +8,17 @@ import dateGeneration from '../../helpers/dateGeneration';
 import { mockedListsContext } from '../../context';
 import reducer from './reducer';
 import {
-  ACTION_NAME,
-  ACTION_DURATION,
-  ACTION_DESCRIPTION,
-  ACTION_TITLE,
-  ACTION_DELETEAUTHOR,
-  ACTION_ADDAUTHOR,
-} from '../../constants';
+  title,
+  name,
+  description,
+  duration,
+  deleteAuthor,
+  addAuthor,
+} from './actions';
 
 import styles from './CreateCourse.module.css';
 
-const CreateCourse = ({ callbackFunc, onAddAuthor }) => {
+const CreateCourse = ({ callbackFunc, addAuthorToAuthorsList }) => {
   const mockedLists = useContext(mockedListsContext);
 
   const stateInit = {
@@ -71,10 +71,37 @@ const CreateCourse = ({ callbackFunc, onAddAuthor }) => {
           id: uuidv4(),
           name: stateForNewCourse.name,
         };
-        onAddAuthor(author);
+        addAuthorToAuthorsList(author);
       }
     },
-    [stateForNewCourse.name, onAddAuthor]
+    [stateForNewCourse.name, addAuthorToAuthorsList]
+  );
+
+  const onAddAuthor = useCallback(
+    (e, authorId, allAuthors) => {
+      e.preventDefault();
+      const arrAuthorsCourse = [...stateForNewCourse.authorsOfCourse];
+      const arrIdshki = [...stateForNewCourse.idshki];
+
+      allAuthors.map((item) => {
+        if (item.id === authorId) {
+          arrAuthorsCourse.push(item);
+          arrIdshki.push(item.id);
+        }
+      });
+
+      dispatch(addAuthor(arrIdshki, arrAuthorsCourse));
+    },
+    [stateForNewCourse.authorsOfCourse, stateForNewCourse.idshki]
+  );
+
+  const addAuthorHandler = useCallback(
+    (id, allAuthors) => {
+      return function (e) {
+        onAddAuthor(e, id, allAuthors);
+      };
+    },
+    [onAddAuthor]
   );
 
   const createAuthorsList = useCallback(
@@ -90,14 +117,7 @@ const CreateCourse = ({ callbackFunc, onAddAuthor }) => {
                 <p className={styles.author}>{name}</p>
                 <Button
                   text='Add author'
-                  callbackFunc={(e) =>
-                    dispatch({
-                      type: ACTION_ADDAUTHOR,
-                      event: e,
-                      authorId: id,
-                      allAuthors: data,
-                    })
-                  }
+                  callbackFunc={addAuthorHandler(id, data)}
                 />
               </li>
             );
@@ -107,37 +127,64 @@ const CreateCourse = ({ callbackFunc, onAddAuthor }) => {
 
       return authorsList;
     },
-    [stateForNewCourse.idshki]
+    [stateForNewCourse.idshki, addAuthorHandler]
   );
 
-  const createCourseAuthorsList = useCallback(
-    (data) => {
-      if (stateForNewCourse.authorsOfCourse.length !== 0) {
-        const list = stateForNewCourse.authorsOfCourse.map(({ id, name }) => {
-          return (
-            <li key={id} className={styles.li}>
-              <p className={styles.author}>{name}</p>
-              <Button
-                text='Delete author'
-                callbackFunc={(e) =>
-                  dispatch({
-                    type: ACTION_DELETEAUTHOR,
-                    event: e,
-                    authorId: id,
-                  })
-                }
-              />
-            </li>
-          );
-        });
+  const onDeleteAuthor = useCallback(
+    (e, authorId) => {
+      e.preventDefault();
+      const arrAuthorsOfCourse = [...stateForNewCourse.authorsOfCourse].filter(
+        ({ id }) => id !== authorId
+      );
 
-        return list;
-      } else {
-        return <p>Author list is empty</p>;
-      }
+      const arridshki = [...stateForNewCourse.idshki].filter(
+        (item) => item !== authorId
+      );
+
+      dispatch(deleteAuthor(arridshki, arrAuthorsOfCourse));
     },
-    [stateForNewCourse.authorsOfCourse]
+    [stateForNewCourse.authorsOfCourse, stateForNewCourse.idshki]
   );
+
+  const deleteAuthorHandler = useCallback(
+    (id) => {
+      return function (e) {
+        onDeleteAuthor(e, id);
+      };
+    },
+    [onDeleteAuthor]
+  );
+
+  const createCourseAuthorsList = useCallback(() => {
+    if (stateForNewCourse.authorsOfCourse.length !== 0) {
+      const list = stateForNewCourse.authorsOfCourse.map(({ id, name }) => {
+        return (
+          <li key={id} className={styles.li}>
+            <p className={styles.author}>{name}</p>
+            <Button
+              text='Delete author'
+              callbackFunc={deleteAuthorHandler(id)}
+            />
+          </li>
+        );
+      });
+
+      return list;
+    } else {
+      return <p>Author list is empty</p>;
+    }
+  }, [stateForNewCourse.authorsOfCourse, deleteAuthorHandler]);
+
+  const onAddAuthorName = (e) => dispatch(name(e));
+  const onChangeDuration = (e) => {
+    if (e.target.value.match(/^0/)) {
+      e.value = null;
+    } else {
+      dispatch(duration(e));
+    }
+  };
+  const onChangeDescr = (e) => dispatch(description(e));
+  const onChangeTitle = (e) => dispatch(title(e));
 
   return (
     <main className={styles.main}>
@@ -145,9 +192,7 @@ const CreateCourse = ({ callbackFunc, onAddAuthor }) => {
         <Input
           placeholdetText='Enter title...'
           labelText='Title'
-          onChange={(e) =>
-            dispatch({ type: ACTION_TITLE, value: e.target.value })
-          }
+          onChange={onChangeTitle}
         />
         <div className={styles.btnCreateCourse}>
           <Button text='Create course' callbackFunc={onCreateCourse} />
@@ -159,9 +204,7 @@ const CreateCourse = ({ callbackFunc, onAddAuthor }) => {
         <textarea
           className={styles.textarea}
           placeholder='Enter description'
-          onChange={(e) =>
-            dispatch({ type: ACTION_DESCRIPTION, value: e.target.value })
-          }
+          onChange={onChangeDescr}
           id='description'
           minLength='2'
         />
@@ -173,19 +216,14 @@ const CreateCourse = ({ callbackFunc, onAddAuthor }) => {
             <h4 className={styles.alSelfCenter}>Add author</h4>
             <Input
               placeholdetText='Enter author name...'
-              onChange={(e) =>
-                dispatch({ type: ACTION_NAME, value: e.target.value })
-              }
+              onChange={onAddAuthorName}
               value={stateForNewCourse.name}
               minLength={2}
               htmlFor='authorName'
               labelText='Author name'
             />
             <div className={styles.authorBtn}>
-              <Button
-                text='Create author'
-                callbackFunc={(e) => onCreateAuthor(e)}
-              />
+              <Button text='Create author' callbackFunc={onCreateAuthor} />
             </div>
           </div>
 
@@ -193,9 +231,7 @@ const CreateCourse = ({ callbackFunc, onAddAuthor }) => {
             <h4 className={styles.alSelfCenter}>Duration</h4>
             <Input
               placeholdetText='Enter duration in minutes...'
-              onChange={(e) =>
-                dispatch({ type: ACTION_DURATION, value: e.target.value })
-              }
+              onChange={onChangeDuration}
               value={stateForNewCourse.duration}
               htmlFor='duration'
               labelText='Duration'

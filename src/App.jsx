@@ -24,7 +24,7 @@ const App = () => {
     setIsAddCourse((isAddCourse) => (isAddCourse = !isAddCourse));
   }, []);
 
-  const onAddAuthor = useCallback(
+  const addAuthorToAuthorsList = useCallback(
     (author) => {
       const newAuthorsList = [...mockedAuthorsList, author];
 
@@ -58,7 +58,10 @@ const App = () => {
       <mockedListsContext.Provider value={value}>
         <Header name='Ella' />
         {isAddCourse ? (
-          <CreateCourse onAddAuthor={onAddAuthor} callbackFunc={onAddCourse} />
+          <CreateCourse
+            addAuthorToAuthorsList={addAuthorToAuthorsList}
+            callbackFunc={onAddCourse}
+          />
         ) : (
           <Courses callbackFunc={toggleIsAddCourse} />
         )}
