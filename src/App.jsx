@@ -7,80 +7,77 @@ import CreateCourse from './componens/CreateCourse/CreateCourse';
 import Registration from './componens/Registration/Registration';
 import { mockedListsContext } from './context';
 
-import './App.css';
+import app from './App.css';
 
 const App = () => {
-	const mockedLists = useContext(mockedListsContext);
+  const mockedLists = useContext(mockedListsContext);
 
-	const [mockedCoursesList, setMockedCoursesListA] = useState([
-		...mockedLists.mockedCoursesList,
-	]);
+  const [mockedCoursesList, setMockedCoursesListA] = useState([
+    ...mockedLists.mockedCoursesList,
+  ]);
 
-	const [mockedAuthorsList, setMockedAuthorsListA] = useState([
-		...mockedLists.mockedAuthorsList,
-	]);
+  const [mockedAuthorsList, setMockedAuthorsListA] = useState([
+    ...mockedLists.mockedAuthorsList,
+  ]);
 
-	// const [isAddCourse, setIsAddCourse] = useState(false);
+  // const [isAddCourse, setIsAddCourse] = useState(false);
 
-	// const toggleIsAddCourse = useCallback(() => {
-	// 	setIsAddCourse((isAddCourse) => (isAddCourse = !isAddCourse));
-	// }, []);
+  // const toggleIsAddCourse = useCallback(() => {
+  // 	setIsAddCourse((isAddCourse) => (isAddCourse = !isAddCourse));
+  // }, []);
 
-	const onAddAuthor = useCallback(
-		(author) => {
-			const newAuthorsList = [...mockedAuthorsList, author];
+  const addAuthorToAuthorsList = useCallback(
+    (author) => {
+      const newAuthorsList = [...mockedAuthorsList, author];
 
-			setMockedAuthorsListA(
-				(mockedAuthorsList) => (mockedAuthorsList = newAuthorsList)
-			);
-		},
-		[mockedAuthorsList]
-	);
+      setMockedAuthorsListA(
+        (mockedAuthorsList) => (mockedAuthorsList = newAuthorsList)
+      );
+    },
+    [mockedAuthorsList]
+  );
 
-	const onAddCourse = useCallback(
-		(course) => {
-			const newCoursesList = [...mockedCoursesList, course];
+  const onAddCourse = useCallback(
+    (course) => {
+      const newCoursesList = [...mockedCoursesList, course];
 
-			setMockedCoursesListA(
-				(mockedCoursesList) => (mockedCoursesList = newCoursesList)
-			);
+      setMockedCoursesListA(
+        (mockedCoursesList) => (mockedCoursesList = newCoursesList)
+      );
 
-			// toggleIsAddCourse();
-		},
-		[mockedCoursesList]
-	);
+      // toggleIsAddCourse();
+    },
+    [mockedCoursesList]
+  );
 
-	const value = {
-		mockedCoursesList,
-		mockedAuthorsList,
-	};
+  const value = {
+    mockedCoursesList,
+    mockedAuthorsList,
+  };
 
-	return (
-		<div className={'app'}>
-			<Router>
-				<mockedListsContext.Provider value={value}>
-					<Header name='Ella' />
-					{/* {isAddCourse ? ( */}
-					<Routes>
-						<Route exact path='/' element={<Registration />}></Route>
-						<Route exact path='/courses' element={<Courses />}></Route>
-						{/* ) : ( */}
-						<Route
-							exact
-							path='/createCourse'
-							element={
-								<CreateCourse
-									onAddAuthor={onAddAuthor}
-									callbackFunc={onAddCourse}
-								/>
-							}
-						></Route>
-					</Routes>
-					{/* )} */}
-				</mockedListsContext.Provider>
-			</Router>
-		</div>
-	);
+  return (
+    <div className={app}>
+      <Router>
+        <mockedListsContext.Provider value={value}>
+          <Header name='Ella' />
+          <Routes>
+            <Route exact path='/' element={<Registration />}></Route>
+            <Route exact path='/courses' element={<Courses />}></Route>
+            <Route
+              exact
+              path='/createCourse'
+              element={
+                <CreateCourse
+                  addAuthorToAuthorsList={addAuthorToAuthorsList}
+                  callbackFunc={onAddCourse}
+                />
+              }
+            ></Route>
+          </Routes>
+        </mockedListsContext.Provider>
+      </Router>
+    </div>
+  );
 };
 
 export default App;
