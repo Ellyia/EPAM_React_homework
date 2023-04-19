@@ -1,5 +1,5 @@
 import { useState, useContext, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import CourseCard from './components/CourseCard/CourseCard';
 import Button from '../../common/Button/Button';
@@ -8,7 +8,10 @@ import { mockedListsContext } from '../../context';
 
 import styles from './Courses.module.css';
 
-const Courses = ({ callbackFunc }) => {
+// const Courses = ({ callbackFunc }) => {
+const Courses = () => {
+  let navigate = useNavigate(); // useCallback ?
+
   const mockedLists = useContext(mockedListsContext);
 
   const [searchPhrase, setSearchPhrase] = useState('');
@@ -50,29 +53,36 @@ const Courses = ({ callbackFunc }) => {
     };
   });
 
-  // const onAddNewCourse = useCallback(
-  // 	(e) => {
-  // 		// e.preventDefault();
-  // 		callbackFunc();
-  // 	},
-  // 	[callbackFunc]
-  // );
+  const onAddNewCourse = useCallback((e, url) => {
+    e.preventDefault();
+    navigate(url);
+  }, []);
+
+  const addCallbackHandler = useCallback((func, url) => {
+    return function (e) {
+      func(e, url);
+    };
+  }, []);
 
   return (
     <div className={styles.main}>
       <div className={styles.searchPanel}>
         <SearchBar onUpdateSearch={onUpdateSearch} />
-        <Link to='createCourse'>
-          <Button
-            text={'Add new course'}
-            // callbackFunc={(e) => onAddNewCourse(e)}
-            callbackFunc={callbackFunc}
-          />
-        </Link>
+        {/* <Link to='/courses/add'> */}
+        <Button
+          text={'Add new course'}
+          callbackFunc={addCallbackHandler(onAddNewCourse, '/courses/add')}
+        />
+        {/* </Link> */}
       </div>
       <ul className={styles.courses}>
         {cards.map(({ id, cardProps, authorsStr }) => (
-          <CourseCard key={id} cardProps={cardProps} authorsStr={authorsStr} />
+          <CourseCard
+            key={id}
+            cardProps={cardProps}
+            authorsStr={authorsStr}
+            id={id}
+          />
         ))}
       </ul>
     </div>

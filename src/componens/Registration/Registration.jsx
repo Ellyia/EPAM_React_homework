@@ -1,5 +1,5 @@
-// import { useState, useContext, useCallback } from 'react';
-// import { Link } from 'react-router-dom';
+import { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
@@ -7,32 +7,99 @@ import Button from '../../common/Button/Button';
 import styles from './Registration.module.css';
 
 const Registration = () => {
+  let navigate = useNavigate(); // useCallback ?
+
+  const isValid = useCallback(({ name, password, email }) => {
+    return name.length > 5 && password.length > 5 && email.length > 2; // добавить валидацию email
+  }, []);
+
+  const createNewUser = (e) => {
+    const target = e.target;
+    const newUser = {
+      name: target.name.value,
+      password: target.password.value,
+      email: target.email.value,
+    };
+
+    return newUser;
+  };
+
+  const fetchData = async (newUser) => {
+    const response = await fetch('http://localhost:4000/register', {
+      method: 'POST',
+      body: JSON.stringify(newUser),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const result = await response.json();
+
+    localStorage.setItem('userName', newUser.name);
+
+    console.log('end', result);
+
+    return result;
+  };
+
+  const callbackFuncReg = useCallback(
+    (url, newUser) => {
+      if (isValid(newUser)) {
+        fetchData(newUser);
+        navigate(url);
+      } else {
+        alert('Please, fill in all fields');
+      }
+    },
+    [fetchData, isValid]
+  );
+
+  const onSubmitForm = useCallback(
+    (e, url) => {
+      e.preventDefault();
+      const newUser = createNewUser(e);
+      console.log('newUser', newUser);
+
+      callbackFuncReg(url, newUser);
+    },
+    [callbackFuncReg]
+  );
+
+  const callbackFuncToLog = useCallback((e, url) => {
+    e.preventDefault();
+    navigate(url);
+  }, []);
+
+  const addCallbackHandler = useCallback((func, url) => {
+    return function (e) {
+      func(e, url);
+    };
+  }, []);
+
   return (
-    <div className={styles.registrationForm}>
+    <div className={styles.registration}>
       <h2>Registration</h2>
-      <form action='#'>
-        <Input
-          placeholdetText='Enter name'
-          labelText='Name'
-          // onChange={(e) => dispatch({ type: 'title', value: e.target.value })}
-        />
-        <Input
-          placeholdetText='Enter email'
-          labelText='Email'
-          // onChange={(e) => dispatch({ type: 'title', value: e.target.value })}
-        />
+      <form
+        className={styles.registrationForm}
+        action=''
+        onSubmit={addCallbackHandler(onSubmitForm, '/login')}
+      >
+        <Input placeholdetText='Enter name' labelText='Name' name='name' />
+        <Input placeholdetText='Enter email' labelText='Email' name='email' />
         <Input
           placeholdetText='Enter password'
           labelText='Password'
-          // onChange={(e) => dispatch({ type: 'title', value: e.target.value })}
+          name='password'
         />
-        <Button
-          text='Registration'
-          // callbackFunc={(e) => onCreateAuthor(e)}
-        />
+        <Button text={'Registration'} />
       </form>
       <p>
-        If you have an accountyou can <a href='#'>Login</a>
+        If you have an account you can{' '}
+        <Button
+          text={'Login'}
+          callbackFunc={addCallbackHandler(callbackFuncToLog, '/login')}
+          type={'button'}
+        />
       </p>
     </div>
   );

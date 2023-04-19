@@ -1,16 +1,27 @@
 import { useState, useContext, useCallback } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 import Header from './componens/Header/Header';
 import Courses from './componens/Courses/Courses';
 import CreateCourse from './componens/CreateCourse/CreateCourse';
 import Registration from './componens/Registration/Registration';
+import Login from './componens/Login/Login';
+import CourseInfo from './componens/CourseInfo/CourseInfo';
 import { mockedListsContext } from './context';
 
 import app from './App.css';
 
+import { createContext } from 'react';
+
+const LoginContext = createContext(null);
+
 const App = () => {
   const mockedLists = useContext(mockedListsContext);
+
+  const [token, setisToken] = useState({
+    isLoggedIn: null,
+    userName: null,
+  });
 
   const [mockedCoursesList, setMockedCoursesListA] = useState([
     ...mockedLists.mockedCoursesList,
@@ -54,28 +65,58 @@ const App = () => {
     mockedCoursesList,
     mockedAuthorsList,
   };
+  ///////////////////////////////////////////////////
+  // const [isLogged, setisLoggedIn] = useState({
+  //   isLoggedIn: null,
+  //   userName: '',
+  // });
 
+  let isLoggedIn = !!localStorage.getItem('result');
+
+  let userName = localStorage.getItem('userName');
+
+  // const func = () => {
+  //   if (!isLoggedInLS) {
+  //     return {
+  //       display: 'none',
+  //     };
+  //   } else {
+  //     return {
+  //       display: 'block',
+  //     };
+  //   }
+  // };
+
+  // let isLoggedIn = func();
+  // console.log(isLoggedIn);
+
+  // для нейм нужен отдельный контекст?
   return (
     <div className={app}>
-      <Router>
-        <mockedListsContext.Provider value={value}>
-          <Header name='Ella' />
+      <mockedListsContext.Provider value={value}>
+        <LoginContext.Provider value={token}>
           <Routes>
-            <Route exact path='/' element={<Registration />}></Route>
-            <Route exact path='/courses' element={<Courses />}></Route>
             <Route
-              exact
-              path='/createCourse'
-              element={
-                <CreateCourse
-                  addAuthorToAuthorsList={addAuthorToAuthorsList}
-                  callbackFunc={onAddCourse}
-                />
-              }
-            ></Route>
+              path='/'
+              element={<Header userName={userName} isLoggedIn={isLoggedIn} />}
+            >
+              <Route path='registration' element={<Registration />}></Route>
+              <Route path='login' element={<Login />}></Route>
+              <Route path='courses' element={<Courses />}></Route>
+              <Route path='courses/:courseId' element={<CourseInfo />}></Route>
+              <Route
+                path='courses/add'
+                element={
+                  <CreateCourse
+                    addAuthorToAuthorsList={addAuthorToAuthorsList}
+                    callbackFunc={onAddCourse}
+                  />
+                }
+              ></Route>
+            </Route>
           </Routes>
-        </mockedListsContext.Provider>
-      </Router>
+        </LoginContext.Provider>
+      </mockedListsContext.Provider>
     </div>
   );
 };

@@ -1,8 +1,8 @@
 import styles from './Button.module.css';
 
-const Button = ({ text, callbackFunc }) => {
+const Button = ({ text, callbackFunc, type = 'submit' }) => {
   return (
-    <button className={styles.btnBasis} onClick={callbackFunc} type='submit'>
+    <button className={styles.btnBasis} onClick={callbackFunc} type={type}>
       {text}
     </button>
   );
