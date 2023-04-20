@@ -1,34 +1,21 @@
 import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom'; //
+import { useNavigate } from 'react-router-dom';
 
 import Button from '../../common/Button/Button';
 import Input from '../../common/Input/Input';
+import { useAuth } from '../../hoc/useAuth';
 
 import styles from './Login.module.css';
 
 const Login = () => {
-  let navigate = useNavigate(); // useCallback?
-
-  // const [newUser, setNewUser] = useState({
-  //   password: '',
-  //   email: '',
-  // });
+  const navigate = useNavigate();
+  const { signin } = useAuth();
 
   const isValid = useCallback(({ password, email }) => {
     return password.length > 5 && email.length > 2; // добавить валидацию email
   }, []);
 
-  // const onChangePassword = useCallback(
-  //   (e) => setNewUser({ ...newUser, password: e.target.value }),
-  //   [newUser]
-  // );
-
-  // const onChangeEmail = useCallback(
-  //   (e) => setNewUser({ ...newUser, email: e.target.value }),
-  //   [newUser]
-  // );
-
-  const createNewUser = (e) => {
+  const loginUser = useCallback((e) => {
     const target = e.target;
     const newUser = {
       password: target.password.value,
@@ -36,10 +23,9 @@ const Login = () => {
     };
 
     return newUser;
-  };
+  }, []);
 
-  const fetchData = async (newUser) => {
-    // how to use useCallback
+  const fetchData = useCallback(async (newUser) => {
     const response = await fetch('http://localhost:4000/login', {
       method: 'POST',
       body: JSON.stringify(newUser),
@@ -50,34 +36,32 @@ const Login = () => {
 
     const result = await response.json();
 
-    localStorage.setItem('result', result.result); // это в контекст? isLoggedIn и сохранять name ?
+    localStorage.setItem('result', result.result);
 
-    console.log(result.result);
+    signin(result.result, () => navigate('/courses'));
 
     return result;
-  };
+  }, []);
 
   const callbackFuncLogin = useCallback(
-    (url, newUser) => {
+    (newUser) => {
       if (isValid(newUser)) {
         fetchData(newUser);
-        navigate(url); //
       } else {
-        alert('Please, fill in all fields'); //
+        alert('Please, fill in all fields');
       }
     },
     [fetchData, isValid]
   );
 
   const onSubmitForm = useCallback(
-    (e, url) => {
+    (e) => {
       e.preventDefault();
-      const newUser = createNewUser(e);
-      console.log('newUser', newUser);
+      const newUser = loginUser(e);
 
-      callbackFuncLogin(url, newUser);
+      callbackFuncLogin(newUser);
     },
-    [callbackFuncLogin]
+    [callbackFuncLogin, loginUser]
   );
 
   const callbackFuncToReg = useCallback((e, url) => {
@@ -94,11 +78,7 @@ const Login = () => {
   return (
     <div className={styles.login}>
       <h2>Login</h2>
-      <form
-        className={styles.loginForm}
-        action=''
-        onSubmit={addCallbackHandler(onSubmitForm, '/courses')}
-      >
+      <form className={styles.loginForm} action='' onSubmit={onSubmitForm}>
         <Input placeholdetText='Enter email' labelText='Email' name='email' />
         <Input
           placeholdetText='Enter password'

@@ -9,19 +9,13 @@ import Login from './componens/Login/Login';
 import CourseInfo from './componens/CourseInfo/CourseInfo';
 import { mockedListsContext } from './context';
 
+import RequireAuth from './hoc/RequireAuth';
+import { AuthProvider } from './hoc/AuthProvider';
+
 import app from './App.css';
-
-import { createContext } from 'react';
-
-const LoginContext = createContext(null);
 
 const App = () => {
   const mockedLists = useContext(mockedListsContext);
-
-  const [token, setisToken] = useState({
-    isLoggedIn: null,
-    userName: null,
-  });
 
   const [mockedCoursesList, setMockedCoursesListA] = useState([
     ...mockedLists.mockedCoursesList,
@@ -30,12 +24,6 @@ const App = () => {
   const [mockedAuthorsList, setMockedAuthorsListA] = useState([
     ...mockedLists.mockedAuthorsList,
   ]);
-
-  // const [isAddCourse, setIsAddCourse] = useState(false);
-
-  // const toggleIsAddCourse = useCallback(() => {
-  // 	setIsAddCourse((isAddCourse) => (isAddCourse = !isAddCourse));
-  // }, []);
 
   const addAuthorToAuthorsList = useCallback(
     (author) => {
@@ -55,8 +43,6 @@ const App = () => {
       setMockedCoursesListA(
         (mockedCoursesList) => (mockedCoursesList = newCoursesList)
       );
-
-      // toggleIsAddCourse();
     },
     [mockedCoursesList]
   );
@@ -65,58 +51,46 @@ const App = () => {
     mockedCoursesList,
     mockedAuthorsList,
   };
-  ///////////////////////////////////////////////////
-  // const [isLogged, setisLoggedIn] = useState({
-  //   isLoggedIn: null,
-  //   userName: '',
-  // });
 
-  let isLoggedIn = !!localStorage.getItem('result');
-
-  let userName = localStorage.getItem('userName');
-
-  // const func = () => {
-  //   if (!isLoggedInLS) {
-  //     return {
-  //       display: 'none',
-  //     };
-  //   } else {
-  //     return {
-  //       display: 'block',
-  //     };
-  //   }
-  // };
-
-  // let isLoggedIn = func();
-  // console.log(isLoggedIn);
-
-  // для нейм нужен отдельный контекст?
   return (
     <div className={app}>
-      <mockedListsContext.Provider value={value}>
-        <LoginContext.Provider value={token}>
+      <AuthProvider>
+        <mockedListsContext.Provider value={value}>
           <Routes>
-            <Route
-              path='/'
-              element={<Header userName={userName} isLoggedIn={isLoggedIn} />}
-            >
+            <Route path='/' element={<Header />}>
               <Route path='registration' element={<Registration />}></Route>
               <Route path='login' element={<Login />}></Route>
-              <Route path='courses' element={<Courses />}></Route>
-              <Route path='courses/:courseId' element={<CourseInfo />}></Route>
+              <Route
+                path='courses'
+                element={
+                  <RequireAuth>
+                    <Courses />
+                  </RequireAuth>
+                }
+              ></Route>
+              <Route
+                path='courses/:courseId'
+                element={
+                  <RequireAuth>
+                    <CourseInfo />
+                  </RequireAuth>
+                }
+              ></Route>
               <Route
                 path='courses/add'
                 element={
-                  <CreateCourse
-                    addAuthorToAuthorsList={addAuthorToAuthorsList}
-                    callbackFunc={onAddCourse}
-                  />
+                  <RequireAuth>
+                    <CreateCourse
+                      addAuthorToAuthorsList={addAuthorToAuthorsList}
+                      callbackFunc={onAddCourse}
+                    />
+                  </RequireAuth>
                 }
               ></Route>
             </Route>
           </Routes>
-        </LoginContext.Provider>
-      </mockedListsContext.Provider>
+        </mockedListsContext.Provider>
+      </AuthProvider>
     </div>
   );
 };

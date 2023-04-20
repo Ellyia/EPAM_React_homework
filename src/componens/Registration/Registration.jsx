@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 
 import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
+import { useAuth } from '../../hoc/useAuth';
 
 import styles from './Registration.module.css';
 
 const Registration = () => {
-  let navigate = useNavigate(); // useCallback ?
+  const navigate = useNavigate();
+  const { setNewUser } = useAuth();
 
   const isValid = useCallback(({ name, password, email }) => {
     return name.length > 5 && password.length > 5 && email.length > 2; // добавить валидацию email
@@ -24,7 +26,7 @@ const Registration = () => {
     return newUser;
   };
 
-  const fetchData = async (newUser) => {
+  const fetchData = useCallback(async (newUser) => {
     const response = await fetch('http://localhost:4000/register', {
       method: 'POST',
       body: JSON.stringify(newUser),
@@ -35,18 +37,19 @@ const Registration = () => {
 
     const result = await response.json();
 
-    localStorage.setItem('userName', newUser.name);
+    if (result?.successful) {
+      navigate('/login');
+    }
 
     console.log('end', result);
 
     return result;
-  };
+  }, []);
 
   const callbackFuncReg = useCallback(
-    (url, newUser) => {
+    (newUser) => {
       if (isValid(newUser)) {
         fetchData(newUser);
-        navigate(url);
       } else {
         alert('Please, fill in all fields');
       }
@@ -55,12 +58,12 @@ const Registration = () => {
   );
 
   const onSubmitForm = useCallback(
-    (e, url) => {
+    (e) => {
       e.preventDefault();
       const newUser = createNewUser(e);
-      console.log('newUser', newUser);
+      console.log('newUser from form', newUser);
 
-      callbackFuncReg(url, newUser);
+      callbackFuncReg(newUser);
     },
     [callbackFuncReg]
   );
@@ -82,7 +85,7 @@ const Registration = () => {
       <form
         className={styles.registrationForm}
         action=''
-        onSubmit={addCallbackHandler(onSubmitForm, '/login')}
+        onSubmit={onSubmitForm}
       >
         <Input placeholdetText='Enter name' labelText='Name' name='name' />
         <Input placeholdetText='Enter email' labelText='Email' name='email' />

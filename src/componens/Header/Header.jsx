@@ -1,19 +1,22 @@
 import { useCallback } from 'react';
-import { useNavigate, Outlet } from 'react-router-dom';
+import { useNavigate, Outlet, Navigate } from 'react-router-dom';
 
 import Logo from './components/Logo/Logo.jsx';
 import Button from '../../common/Button/Button.jsx';
+import { useAuth } from '../../hoc/useAuth';
 
 import styles from './Header.module.css';
 
-const Header = ({ userName, isLoggedIn }) => {
+const Header = () => {
   let navigate = useNavigate();
+  const { signout, token } = useAuth();
 
   const callbackFunc = useCallback((e, url) => {
     e.preventDefault();
 
-    localStorage.clear(); //
-    navigate(url);
+    signout(() => navigate(url, { replace: true }));
+
+    localStorage.clear();
   }, []);
 
   const addCallbackHandler = useCallback((url) => {
@@ -22,40 +25,18 @@ const Header = ({ userName, isLoggedIn }) => {
     };
   }, []);
 
-  // let isLoggedIn = !!localStorage.getItem('result');
-
-  // let userName = localStorage.getItem('userName');
-
-  // const func = () => {
-  //   if (!isLoggedIn) {
-  //     return {
-  //       display: 'none',
-  //     };
-  //   } else {
-  //     return {
-  //       display: 'block',
-  //     };
-  //   }
-  // };
-
-  // let res = func();
-  // console.log(res);
   return (
     <>
       <header className={styles.header}>
         <Logo />
         <div className={styles.flex}>
-          {isLoggedIn && (
-            <>
-              <div className={styles.marginRight}>{userName}</div>
-              <Button
-                text='Logout'
-                callbackFunc={addCallbackHandler('/login')}
-              />
-            </>
+          <div className={styles.marginRight}>{!!token ? 'Ella' : ''}</div>
+          {!!token && (
+            <Button text='Logout' callbackFunc={addCallbackHandler('/login')} />
           )}
         </div>
       </header>
+
       <Outlet />
     </>
   );
