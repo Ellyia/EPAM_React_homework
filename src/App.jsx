@@ -1,9 +1,16 @@
 import { useState, useContext, useCallback } from 'react';
+import { Route, Routes } from 'react-router-dom';
 
 import Header from './componens/Header/Header';
 import Courses from './componens/Courses/Courses';
 import CreateCourse from './componens/CreateCourse/CreateCourse';
+import Registration from './componens/Registration/Registration';
+import Login from './componens/Login/Login';
+import CourseInfo from './componens/CourseInfo/CourseInfo';
 import { mockedListsContext } from './context';
+
+import RequireAuth from './hoc/RequireAuth';
+import { AuthProvider } from './hoc/AuthProvider';
 
 import app from './App.css';
 
@@ -17,12 +24,6 @@ const App = () => {
   const [mockedAuthorsList, setMockedAuthorsListA] = useState([
     ...mockedLists.mockedAuthorsList,
   ]);
-
-  const [isAddCourse, setIsAddCourse] = useState(false);
-
-  const toggleIsAddCourse = useCallback(() => {
-    setIsAddCourse((isAddCourse) => (isAddCourse = !isAddCourse));
-  }, []);
 
   const addAuthorToAuthorsList = useCallback(
     (author) => {
@@ -42,10 +43,8 @@ const App = () => {
       setMockedCoursesListA(
         (mockedCoursesList) => (mockedCoursesList = newCoursesList)
       );
-
-      toggleIsAddCourse();
     },
-    [mockedCoursesList, toggleIsAddCourse]
+    [mockedCoursesList]
   );
 
   const value = {
@@ -55,17 +54,43 @@ const App = () => {
 
   return (
     <div className={app}>
-      <mockedListsContext.Provider value={value}>
-        <Header name='Ella' />
-        {isAddCourse ? (
-          <CreateCourse
-            addAuthorToAuthorsList={addAuthorToAuthorsList}
-            callbackFunc={onAddCourse}
-          />
-        ) : (
-          <Courses callbackFunc={toggleIsAddCourse} />
-        )}
-      </mockedListsContext.Provider>
+      <AuthProvider>
+        <mockedListsContext.Provider value={value}>
+          <Routes>
+            <Route path='/' element={<Header />}>
+              <Route path='registration' element={<Registration />}></Route>
+              <Route path='login' element={<Login />}></Route>
+              <Route
+                path='courses'
+                element={
+                  <RequireAuth>
+                    <Courses />
+                  </RequireAuth>
+                }
+              ></Route>
+              <Route
+                path='courses/:courseId'
+                element={
+                  <RequireAuth>
+                    <CourseInfo />
+                  </RequireAuth>
+                }
+              ></Route>
+              <Route
+                path='courses/add'
+                element={
+                  <RequireAuth>
+                    <CreateCourse
+                      addAuthorToAuthorsList={addAuthorToAuthorsList}
+                      callbackFunc={onAddCourse}
+                    />
+                  </RequireAuth>
+                }
+              ></Route>
+            </Route>
+          </Routes>
+        </mockedListsContext.Provider>
+      </AuthProvider>
     </div>
   );
 };

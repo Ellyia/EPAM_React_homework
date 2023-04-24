@@ -1,5 +1,6 @@
 import { useContext, useCallback, useReducer } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { useNavigate } from 'react-router-dom';
 
 import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
@@ -21,6 +22,8 @@ import styles from './CreateCourse.module.css';
 const CreateCourse = ({ callbackFunc, addAuthorToAuthorsList }) => {
   const mockedLists = useContext(mockedListsContext);
 
+  let navigate = useNavigate();
+
   const stateInit = {
     name: '',
     duration: '',
@@ -41,27 +44,24 @@ const CreateCourse = ({ callbackFunc, addAuthorToAuthorsList }) => {
     );
   }, [stateForNewCourse]);
 
-  const onCreateCourse = useCallback(
-    (e) => {
-      e.preventDefault();
+  const onCreateCourse = useCallback(() => {
+    if (isFormValid()) {
+      const card = {
+        id: uuidv4(),
+        title: stateForNewCourse.title,
+        description: stateForNewCourse.description,
+        creationDate: dateGeneration(),
+        duration: pipeDuration(stateForNewCourse.duration),
+        authors: stateForNewCourse.idshki, // authorsOfCourse.map(x => x.id),
+      };
 
-      if (isFormValid()) {
-        const card = {
-          id: uuidv4(),
-          title: stateForNewCourse.title,
-          description: stateForNewCourse.description,
-          creationDate: dateGeneration(),
-          duration: pipeDuration(stateForNewCourse.duration),
-          authors: stateForNewCourse.idshki, // authorsOfCourse.map(x => x.id),
-        };
+      callbackFunc(card);
 
-        callbackFunc(card);
-      } else {
-        alert('Please, fill in all fields');
-      }
-    },
-    [isFormValid, callbackFunc, stateForNewCourse]
-  );
+      navigate('/courses');
+    } else {
+      alert('Please, fill in all fields');
+    }
+  }, [isFormValid, callbackFunc, stateForNewCourse, navigate]);
 
   const onCreateAuthor = useCallback(
     (e) => {
@@ -259,5 +259,5 @@ const CreateCourse = ({ callbackFunc, addAuthorToAuthorsList }) => {
     </main>
   );
 };
-
+// mockedLists.mockedAuthorsList - а  мне нужно это передавать?
 export default CreateCourse;
