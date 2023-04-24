@@ -1,0 +1,18 @@
+.header {
+  margin: 10px;
+  padding: 20px 30px;
+  background-color: #fff;
+  border: 1px solid rgb(110, 200, 252);
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+}
+
+.marginRight {
+  margin-right: 30px;
+}

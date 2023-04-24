@@ -1,0 +1,9 @@
+.inputBasis {
+  width: 400px;
+  padding: 4px;
+  display: block;
+}
+
+.label {
+  margin-right: 10px;
+}
