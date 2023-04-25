@@ -8,9 +8,8 @@ import { mockedListsContext } from '../../context';
 
 import styles from './Courses.module.css';
 
-// const Courses = ({ callbackFunc }) => {
 const Courses = () => {
-  let navigate = useNavigate(); // useCallback ?
+  let navigate = useNavigate();
 
   const mockedLists = useContext(mockedListsContext);
 
@@ -68,12 +67,10 @@ const Courses = () => {
     <div className={styles.main}>
       <div className={styles.searchPanel}>
         <SearchBar onUpdateSearch={onUpdateSearch} />
-        {/* <Link to='/courses/add'> */}
         <Button
           text={'Add new course'}
           callbackFunc={addCallbackHandler(onAddNewCourse, '/courses/add')}
         />
-        {/* </Link> */}
       </div>
       <ul className={styles.courses}>
         {cards.map(({ id, cardProps, authorsStr }) => (

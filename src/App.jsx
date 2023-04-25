@@ -1,5 +1,6 @@
 import { useState, useContext, useCallback } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { Provider } from 'react-redux'; //
 
 import Header from './componens/Header/Header';
 import Courses from './componens/Courses/Courses';
@@ -8,6 +9,7 @@ import Registration from './componens/Registration/Registration';
 import Login from './componens/Login/Login';
 import CourseInfo from './componens/CourseInfo/CourseInfo';
 import { mockedListsContext } from './context';
+import { rootReducer } from './store/index'; //
 
 import RequireAuth from './hoc/RequireAuth';
 import { AuthProvider } from './hoc/AuthProvider';
