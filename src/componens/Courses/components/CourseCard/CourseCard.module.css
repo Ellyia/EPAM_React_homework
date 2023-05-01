@@ -14,3 +14,26 @@
 .info {
   width: 30%;
 }
+
+.btnUpdate {
+  width: 50px;
+  padding: 4px;
+  background-color: #b1eeda;
+  border-radius: 4px;
+  border-color: #b1eeda;
+  background-image: url("iconUpdate.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  margin: 0 10px;
+}
+
+.btnDelete {
+  width: 50px;
+  padding: 4px;
+  background-color: #b1eeda;
+  border-radius: 4px;
+  border-color: #b1eeda;
+  background-image: url("iconDelete.png");
+  background-repeat: no-repeat;
+  background-position: center;
+}

@@ -6,12 +6,12 @@ import authorsReducer from './authors/reducer';
 import coursesReducer from './courses/reducer';
 import userReducer from './user/reducer';
 
-export const rootReducer = combineReducers({
+const reducer = combineReducers({
   authorsReducer,
   coursesReducer,
   userReducer,
 });
 
-const store = configureStore({ rootReducer });
+const store = configureStore({ reducer });
 
 export default store;

@@ -1,32 +1,30 @@
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router';
-
-import { mockedListsContext } from '../../context';
+import { useDispatch, useSelector } from 'react-redux';
 
 const CourseInfo = () => {
-  const mockedLists = useContext(mockedListsContext);
   let { courseId } = useParams();
 
-  const course = mockedLists.mockedCoursesList.find(
-    (course) => course.id === courseId
-  );
-  console.log(course);
+  // const course = mockedLists.mockedCoursesList.find(
+  //   (course) => course.id === courseId
+  // );
+  // console.log(course); // запрос
 
   return (
     <div className='styles.CourseInfo'>
       <Link to='/courses'>{'<'} Back to courses</Link>
-      <h3>{course.title}</h3>
+      {/* <h3>{course.title}</h3> */}
 
       <div className='description-container'>
         <div className='container-description'>
-          <p> {course.description}</p>
+          {/* <p> {course.description}</p> */}
         </div>
         <div className='container-info'>
-          <p>ID: {course.id}</p>
+          {/* <p>ID: {course.id}</p>
           <p>Duration: {course.duration}</p>
           <p>Created: {course.creationDate}</p>
-          <p>Authors: {course.authors}</p>
+          <p>Authors: {course.authors}</p> */}
         </div>
       </div>
     </div>

@@ -1,10 +1,14 @@
-// const authorsInitialState = []; // default value - empty array. After
-// success getting authors from API - array of authors.
+import { ACTION_ADD_AUTHORS, ACTION_GET_AUTHORS } from './actionTypes';
 
-const authorsReducer = (state = [], action) => {
+const authorsInitialState = [];
+
+const authorsReducer = (state = authorsInitialState, action) => {
   switch (action.type) {
-    case 'ADD_AUTHORS':
-      return state.concat([action.authors]);
+    case ACTION_GET_AUTHORS:
+      return { ...state, authors: action.payload };
+    case ACTION_ADD_AUTHORS:
+      console.log('state', state);
+      return { ...state, authors: action.payload };
     default:
       return state;
   }

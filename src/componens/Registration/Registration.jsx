@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 
 import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
-import { useAuth } from '../../hoc/useAuth';
+// import { useAuth } from '../../hoc/useAuth';
 
 import styles from './Registration.module.css';
 
 const Registration = () => {
   const navigate = useNavigate();
-  const { setNewUser } = useAuth();
+  // const { setNewUser } = useAuth();
 
   const isValid = useCallback(({ name, password, email }) => {
     return name.length > 5 && password.length > 5 && email.length > 2; // добавить валидацию email

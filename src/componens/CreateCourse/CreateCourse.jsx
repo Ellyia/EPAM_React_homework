@@ -1,12 +1,12 @@
 import { useContext, useCallback, useReducer } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
 import pipeDuration from '../../helpers/pipeDuration';
 import dateGeneration from '../../helpers/dateGeneration';
-import { mockedListsContext } from '../../context';
 import reducer from './reducer';
 import {
   title,
@@ -17,12 +17,23 @@ import {
   addAuthor,
 } from './actions';
 
+import { courses, addCourse } from '../../store/courses/actionCreators';
+
 import styles from './CreateCourse.module.css';
 
-const CreateCourse = ({ callbackFunc, addAuthorToAuthorsList }) => {
-  const mockedLists = useContext(mockedListsContext);
-
+const CreateCourse = ({ addAuthorToAuthorsList }) => {
   let navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const authorsList = useSelector((state) => {
+    console.log('state.authorsReducer.authors', state.authorsReducer.authors);
+    return state.authorsReducer.authors;
+  });
+
+  const coursesList = useSelector((state) => {
+    console.log('state.coursesReducer.courses', state.coursesReducer.courses); //
+    return state.coursesReducer.courses;
+  });
 
   const stateInit = {
     name: '',
@@ -33,7 +44,7 @@ const CreateCourse = ({ callbackFunc, addAuthorToAuthorsList }) => {
     authorsOfCourse: [],
   };
 
-  const [stateForNewCourse, dispatch] = useReducer(reducer, stateInit);
+  const [stateForNewCourse, dispatchLocal] = useReducer(reducer, stateInit);
 
   const isFormValid = useCallback(() => {
     return (
@@ -44,24 +55,35 @@ const CreateCourse = ({ callbackFunc, addAuthorToAuthorsList }) => {
     );
   }, [stateForNewCourse]);
 
-  const onCreateCourse = useCallback(() => {
-    if (isFormValid()) {
-      const card = {
-        id: uuidv4(),
-        title: stateForNewCourse.title,
-        description: stateForNewCourse.description,
-        creationDate: dateGeneration(),
-        duration: pipeDuration(stateForNewCourse.duration),
-        authors: stateForNewCourse.idshki, // authorsOfCourse.map(x => x.id),
-      };
+  const onCreateCourse = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (isFormValid()) {
+        const card = {
+          id: uuidv4(),
+          title: stateForNewCourse.title,
+          description: stateForNewCourse.description,
+          creationDate: dateGeneration(),
+          duration: pipeDuration(stateForNewCourse.duration),
+          authors: stateForNewCourse.idshki, // authorsOfCourse.map(x => x.id),
+        };
 
-      callbackFunc(card);
+        const newCoursesList = [...coursesList, card];
 
-      navigate('/courses');
-    } else {
-      alert('Please, fill in all fields');
-    }
-  }, [isFormValid, callbackFunc, stateForNewCourse, navigate]);
+        dispatch(courses(newCoursesList));
+
+        console.log('coursesListApdated', coursesList);
+        // callbackFunc(card); // заменить на ниже...
+
+        // метод из стора с запросом POST /courses/add
+
+        navigate('/courses');
+      } else {
+        alert('Please, fill in all fields');
+      }
+    },
+    [stateForNewCourse]
+  );
 
   const onCreateAuthor = useCallback(
     (e) => {
@@ -71,7 +93,11 @@ const CreateCourse = ({ callbackFunc, addAuthorToAuthorsList }) => {
           id: uuidv4(),
           name: stateForNewCourse.name,
         };
-        addAuthorToAuthorsList(author);
+
+        // dispatch1(toAddAuthor(author));
+        // addAuthorToAuthorsList(author); // dispatch
+
+        console.log(author);
       }
     },
     [stateForNewCourse.name, addAuthorToAuthorsList]
@@ -90,7 +116,7 @@ const CreateCourse = ({ callbackFunc, addAuthorToAuthorsList }) => {
         }
       });
 
-      dispatch(addAuthor(arrIdshki, arrAuthorsCourse));
+      dispatchLocal(addAuthor(arrIdshki, arrAuthorsCourse));
     },
     [stateForNewCourse.authorsOfCourse, stateForNewCourse.idshki]
   );
@@ -106,7 +132,7 @@ const CreateCourse = ({ callbackFunc, addAuthorToAuthorsList }) => {
 
   const createAuthorsList = useCallback(
     (data) => {
-      const authorsList = data
+      const authors = data
         .map(({ id, name }) => {
           const isInclude = stateForNewCourse.idshki.some(
             (item) => item === id
@@ -125,7 +151,7 @@ const CreateCourse = ({ callbackFunc, addAuthorToAuthorsList }) => {
         })
         .filter(Boolean); // (x => !!x)
 
-      return authorsList;
+      return authors;
     },
     [stateForNewCourse.idshki, addAuthorHandler]
   );
@@ -141,7 +167,7 @@ const CreateCourse = ({ callbackFunc, addAuthorToAuthorsList }) => {
         (item) => item !== authorId
       );
 
-      dispatch(deleteAuthor(arridshki, arrAuthorsOfCourse));
+      dispatchLocal(deleteAuthor(arridshki, arrAuthorsOfCourse));
     },
     [stateForNewCourse.authorsOfCourse, stateForNewCourse.idshki]
   );
@@ -175,16 +201,22 @@ const CreateCourse = ({ callbackFunc, addAuthorToAuthorsList }) => {
     }
   }, [stateForNewCourse.authorsOfCourse, deleteAuthorHandler]);
 
-  const onAddAuthorName = (e) => dispatch(name(e));
+  const onAddAuthorName = (e) => dispatchLocal(name(e));
   const onChangeDuration = (e) => {
     if (e.target.value.match(/^0/)) {
       e.value = null;
     } else {
-      dispatch(duration(e));
+      dispatchLocal(duration(e));
     }
   };
-  const onChangeDescr = (e) => dispatch(description(e));
-  const onChangeTitle = (e) => dispatch(title(e));
+  const onChangeDescr = (e) => dispatchLocal(description(e));
+  const onChangeTitle = (e) => dispatchLocal(title(e));
+
+  const addCallbackHandler = useCallback((func) => {
+    return function (e) {
+      func(e);
+    };
+  }, []);
 
   return (
     <main className={styles.main}>
@@ -195,7 +227,10 @@ const CreateCourse = ({ callbackFunc, addAuthorToAuthorsList }) => {
           onChange={onChangeTitle}
         />
         <div className={styles.btnCreateCourse}>
-          <Button text='Create course' callbackFunc={onCreateCourse} />
+          <Button
+            text='Create course'
+            callbackFunc={addCallbackHandler(onCreateCourse)}
+          />
         </div>
       </div>
 
@@ -247,17 +282,16 @@ const CreateCourse = ({ callbackFunc, addAuthorToAuthorsList }) => {
         <div className={styles.authors}>
           <section>
             <h4 className={styles.textAlCenter}>Authors</h4>
-            <ul>{createAuthorsList(mockedLists.mockedAuthorsList)}</ul>
+            <ul>{createAuthorsList(authorsList)}</ul>
           </section>
 
           <section>
             <h4 className={styles.textAlCenter}>Course authors</h4>
-            <ul>{createCourseAuthorsList(mockedLists.mockedAuthorsList)}</ul>
+            <ul>{createCourseAuthorsList(authorsList)}</ul>
           </section>
         </div>
       </div>
     </main>
   );
 };
-// mockedLists.mockedAuthorsList - а  мне нужно это передавать?
 export default CreateCourse;

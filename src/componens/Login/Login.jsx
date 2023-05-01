@@ -88,7 +88,7 @@ const Login = () => {
         <Button text={'Login'} />
       </form>
       <p>
-        If you have an accountyou can{' '}
+        If you have an account you can{' '}
         <Button
           text={'Registration'}
           callbackFunc={addCallbackHandler(callbackFuncToReg, '/registration')}
