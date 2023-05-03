@@ -1,6 +1,6 @@
 import { ACTION_ADD_COURSE, ACTION_GET_COURSES } from './actionTypes';
 
-export const courses = (data) => ({
+export const toLoadCourses = (data) => ({
   type: ACTION_GET_COURSES,
   payload: data,
 });

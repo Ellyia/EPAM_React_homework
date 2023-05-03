@@ -3,13 +3,12 @@ import { useNavigate } from 'react-router-dom';
 
 import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
-// import { useAuth } from '../../hoc/useAuth';
+import { fetchRegistration } from '../../servisces';
 
 import styles from './Registration.module.css';
 
 const Registration = () => {
   const navigate = useNavigate();
-  // const { setNewUser } = useAuth();
 
   const isValid = useCallback(({ name, password, email }) => {
     return name.length > 5 && password.length > 5 && email.length > 2; // добавить валидацию email
@@ -26,42 +25,26 @@ const Registration = () => {
     return newUser;
   };
 
-  const fetchData = useCallback(async (newUser) => {
-    const response = await fetch('http://localhost:4000/register', {
-      method: 'POST',
-      body: JSON.stringify(newUser),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const result = await response.json();
-
-    if (result?.successful) {
-      navigate('/login');
-    }
-
-    console.log('end', result);
-
-    return result;
-  }, []);
-
   const callbackFuncReg = useCallback(
     (newUser) => {
       if (isValid(newUser)) {
-        fetchData(newUser);
+        (async () => {
+          const data = await fetchRegistration(newUser);
+          if (data?.successful) {
+            navigate('/login');
+          }
+        })();
       } else {
         alert('Please, fill in all fields');
       }
     },
-    [fetchData, isValid]
+    [isValid]
   );
 
   const onSubmitForm = useCallback(
     (e) => {
       e.preventDefault();
       const newUser = createNewUser(e);
-      console.log('newUser from form', newUser);
 
       callbackFuncReg(newUser);
     },

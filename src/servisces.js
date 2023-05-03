@@ -1,31 +1,39 @@
 export const loadCourses = async () => {
   const resp = await fetch('http://localhost:4000/courses/all');
   const data = await resp.json();
-  console.log('data.c.result', data.result); //
+
   return data.result;
 };
 
 export const loadAuthors = async () => {
   const resp = await fetch('http://localhost:4000/authors/all');
   const data = await resp.json();
-  console.log('data.a.result', data.result); //
+
   return data.result;
 };
 
-// export const createCards = (courses, authory) => {
-//   const cards = courses.map((cardData) => {
-//     const { id, ...cardProps } = cardData;
-//     const authors = cardProps.authors;
+export const fetchLogin = async (newUser) => {
+  const resp = await fetch('http://localhost:4000/login', {
+    method: 'POST',
+    body: JSON.stringify(newUser),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  const data = await resp.json();
 
-//     let authorsStr = authory
-//       .filter((author) => authors.includes(author.id))
-//       .map((x) => x.name)
-//       .join(', ');
+  return data;
+};
 
-//     return {
-//       id,
-//       cardProps,
-//       authorsStr,
-//     };
-//   });
-// };
+export const fetchRegistration = async (newUser) => {
+  const resp = await fetch('http://localhost:4000/register', {
+    method: 'POST',
+    body: JSON.stringify(newUser),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  const data = await resp.json();
+
+  return data;
+};

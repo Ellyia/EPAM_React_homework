@@ -1,4 +1,4 @@
-import { useContext, useCallback, useReducer } from 'react';
+import { useCallback, useReducer } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,25 +15,20 @@ import {
   duration,
   deleteAuthor,
   addAuthor,
+  deleteName,
 } from './actions';
 
-import { courses, addCourse } from '../../store/courses/actionCreators';
+import { addCourse } from '../../store/courses/actionCreators';
+import { toAddAuthor } from '../../store/authors/actionCreators';
 
 import styles from './CreateCourse.module.css';
 
-const CreateCourse = ({ addAuthorToAuthorsList }) => {
+const CreateCourse = () => {
   let navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const authorsList = useSelector((state) => {
-    console.log('state.authorsReducer.authors', state.authorsReducer.authors);
-    return state.authorsReducer.authors;
-  });
-
-  const coursesList = useSelector((state) => {
-    console.log('state.coursesReducer.courses', state.coursesReducer.courses); //
-    return state.coursesReducer.courses;
-  });
+  const authorsList = useSelector((state) => state.authorsReducer.authors);
+  const coursesList = useSelector((state) => state.coursesReducer.courses);
 
   const stateInit = {
     name: '',
@@ -70,13 +65,8 @@ const CreateCourse = ({ addAuthorToAuthorsList }) => {
 
         const newCoursesList = [...coursesList, card];
 
-        dispatch(courses(newCoursesList));
-
-        console.log('coursesListApdated', coursesList);
-        // callbackFunc(card); // заменить на ниже...
-
-        // метод из стора с запросом POST /courses/add
-
+        dispatch(addCourse(newCoursesList));
+        // POST /courses/add ?
         navigate('/courses');
       } else {
         alert('Please, fill in all fields');
@@ -94,13 +84,14 @@ const CreateCourse = ({ addAuthorToAuthorsList }) => {
           name: stateForNewCourse.name,
         };
 
-        // dispatch1(toAddAuthor(author));
-        // addAuthorToAuthorsList(author); // dispatch
+        const newAuthors = [...authorsList, author];
 
-        console.log(author);
+        dispatch(toAddAuthor(newAuthors));
+
+        dispatchLocal(deleteName());
       }
     },
-    [stateForNewCourse.name, addAuthorToAuthorsList]
+    [stateForNewCourse.name]
   );
 
   const onAddAuthor = useCallback(

@@ -1,5 +1,6 @@
 import {
   ACTION_NAME,
+  ACTION_DEL_NAME,
   ACTION_DURATION,
   ACTION_DESCRIPTION,
   ACTION_TITLE,
@@ -11,6 +12,9 @@ function reducer(state, action) {
   switch (action.type) {
     case ACTION_NAME:
       return { ...state, name: action.payload };
+
+    case ACTION_DEL_NAME:
+      return { ...state, name: '' };
 
     case ACTION_DURATION:
       return { ...state, duration: action.payload };

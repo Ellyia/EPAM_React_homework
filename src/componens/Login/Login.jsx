@@ -1,14 +1,20 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import Button from '../../common/Button/Button';
 import Input from '../../common/Input/Input';
 import { useAuth } from '../../hoc/useAuth';
 
+import { addUser } from '../../store/user/actionCreators';
+import { fetchLogin } from '../../servisces';
+
 import styles from './Login.module.css';
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const { signin } = useAuth();
 
   const isValid = useCallback(({ password, email }) => {
@@ -25,33 +31,22 @@ const Login = () => {
     return newUser;
   }, []);
 
-  const fetchData = useCallback(async (newUser) => {
-    const response = await fetch('http://localhost:4000/login', {
-      method: 'POST',
-      body: JSON.stringify(newUser),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const result = await response.json();
-
-    localStorage.setItem('result', result.result);
-
-    signin(result.result, () => navigate('/courses'));
-
-    return result;
-  }, []);
-
   const callbackFuncLogin = useCallback(
     (newUser) => {
       if (isValid(newUser)) {
-        fetchData(newUser);
+        (async () => {
+          const data = await fetchLogin(newUser);
+          if (data?.successful) {
+            localStorage.setItem('result', data.result);
+            dispatch(addUser(data));
+            signin(data.result, () => navigate('/courses'));
+          }
+        })();
       } else {
         alert('Please, fill in all fields');
       }
     },
-    [fetchData, isValid]
+    [isValid]
   );
 
   const onSubmitForm = useCallback(
