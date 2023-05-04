@@ -27,11 +27,14 @@ const Header = () => {
     localStorage.clear();
   }, []);
 
-  const addCallbackHandler = useCallback((url) => {
-    return function (e) {
-      callbackFunc(e, url);
-    };
-  }, []);
+  const addCallbackHandler = useCallback(
+    (url) => {
+      return function (e) {
+        callbackFunc(e, url);
+      };
+    },
+    [callbackFunc]
+  );
 
   return (
     <>

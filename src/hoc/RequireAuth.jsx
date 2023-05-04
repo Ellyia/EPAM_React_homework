@@ -1,9 +1,9 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 
 import { useAuth } from './useAuth';
 
 const RequireAuth = ({ children }) => {
-  const location = '/courses';
+  const location = useLocation();
 
   const { token } = useAuth();
 

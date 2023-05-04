@@ -17,14 +17,17 @@ const CourseCard = ({ cardProps, authorsStr, id }) => {
 
   const coursesList = useSelector(getCourses);
 
-  const onDeleteCourse = useCallback((e, idToDel) => {
-    e.preventDefault();
+  const onDeleteCourse = useCallback(
+    (e, idToDel) => {
+      e.preventDefault();
 
-    const newCoursesList = coursesList.filter((item) => item.id !== idToDel);
+      const newCoursesList = coursesList.filter((item) => item.id !== idToDel);
 
-    dispatch(toLoadCourses(newCoursesList));
-    // DELETE
-  }, []);
+      dispatch(toLoadCourses(newCoursesList));
+      // DELETE
+    },
+    [coursesList]
+  );
 
   const onUpdateCourse = useCallback((e) => {
     e.preventDefault();

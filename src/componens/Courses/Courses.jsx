@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 
@@ -35,28 +35,30 @@ const Courses = () => {
   const coursesList = useSelector(getCourses, shallowEqual);
   const authorsList = useSelector(getAuthors, shallowEqual);
 
-  // const [searchPhrase, setSearchPhrase] = useState('');
+  const [searchPhrase, setSearchPhrase] = useState('');
 
-  // const searchCourse = useCallback(
-  //   (items, searchPhrase) => {
-  //     if (searchPhrase?.length === 0) {
-  //       return items;
-  //     }
+  const searchCourse = useCallback(
+    (items, searchPhrase) => {
+      if (searchPhrase?.length === 0) {
+        return items;
+      }
 
-  //     return items.filter((el) => {
-  //       const elName = el.title.toString().toLowerCase();
-  //       const termLC = searchPhrase.toString().toLowerCase();
-  //       return elName.indexOf(termLC) > -1 || el.id.indexOf(termLC) > -1;
-  //     });
-  //   },
-  //   [searchPhrase, coursesList]
-  // );
+      return items.filter((el) => {
+        const elName = el.title.toString().toLowerCase();
+        const termLC = searchPhrase.toString().toLowerCase();
+        return elName.indexOf(termLC) > -1 || el.id.indexOf(termLC) > -1;
+      });
+    },
+    [searchPhrase, coursesList]
+  );
 
-  // const onUpdateSearch = useCallback((searchPhrase) => {
-  //   setSearchPhrase(searchPhrase);
-  // }, []);
+  const onUpdateSearch = useCallback((searchPhrase) => {
+    setSearchPhrase(searchPhrase);
+  }, []);
 
-  const cards = coursesList?.map((cardData) => {
+  const visibleCourses = searchCourse(coursesList, searchPhrase);
+
+  const cards = visibleCourses?.map((cardData) => {
     const { id, ...cardProps } = cardData;
     const authors = cardProps.authors;
 
@@ -71,26 +73,6 @@ const Courses = () => {
       authorsStr,
     };
   });
-
-  // const visibleCourses = searchCourse(coursesList, searchPhrase);
-
-  // const cards = visibleCourses?.map((cardData) => {
-  //   const { id, ...cardProps } = cardData;
-  //   const authors = cardProps.authors;
-
-  //   let authorsStr = authorsList
-  //     ?.filter((author) => authors.includes(author.id))
-  //     .map((x) => x.name)
-  //     .join(', ');
-
-  //   return {
-  //     id,
-  //     cardProps,
-  //     authorsStr,
-  //   };
-  // });
-
-  ///
 
   const onAddNewCourse = useCallback((e, url) => {
     e.preventDefault();
@@ -107,9 +89,7 @@ const Courses = () => {
     return (
       <div className={styles.main}>
         <div className={styles.searchPanel}>
-          <SearchBar
-          // onUpdateSearch={onUpdateSearch}
-          />
+          <SearchBar onUpdateSearch={onUpdateSearch} />
           <Button
             text={'Add new course'}
             callbackFunc={addCallbackHandler(onAddNewCourse, '/courses/add')}

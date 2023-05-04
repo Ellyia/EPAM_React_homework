@@ -21,7 +21,6 @@ const App = () => {
             <Route path='registration' element={<Registration />}></Route>
             <Route path='login' element={<Login />}></Route>
             <Route
-              exact
               path='courses'
               element={
                 <RequireAuth>

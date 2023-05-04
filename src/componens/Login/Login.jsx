@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import Button from '../../common/Button/Button';
@@ -13,9 +13,19 @@ import styles from './Login.module.css';
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation(); //
   const dispatch = useDispatch();
 
+  const fromPage = location.state?.from?.pathname || '/courses'; //
+
   const { signin } = useAuth();
+
+  // де я маю це прописати, щоб коректно працювало?
+  if (localStorage.getItem('result')) {
+    signin(localStorage.getItem('result'), () =>
+      navigate(fromPage, { replace: true })
+    );
+  }
 
   const isValid = useCallback(({ password, email }) => {
     return password.length > 5 && email.length > 2; // добавить валидацию email
@@ -39,14 +49,14 @@ const Login = () => {
           if (data?.successful) {
             localStorage.setItem('result', data.result);
             dispatch(addUser(data));
-            signin(data.result, () => navigate('/courses'));
+            signin(data.result, () => navigate(fromPage, { replace: true }));
           }
         })();
       } else {
         alert('Please, fill in all fields');
       }
     },
-    [isValid]
+    [isValid, fromPage]
   );
 
   const onSubmitForm = useCallback(

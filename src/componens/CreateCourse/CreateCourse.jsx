@@ -72,7 +72,7 @@ const CreateCourse = () => {
         alert('Please, fill in all fields');
       }
     },
-    [stateForNewCourse]
+    [stateForNewCourse, isFormValid, coursesList]
   );
 
   const onCreateAuthor = useCallback(
@@ -91,7 +91,7 @@ const CreateCourse = () => {
         dispatchLocal(deleteName());
       }
     },
-    [stateForNewCourse.name]
+    [stateForNewCourse.name, authorsList]
   );
 
   const onAddAuthor = useCallback(
