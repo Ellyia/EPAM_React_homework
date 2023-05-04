@@ -28,7 +28,7 @@ const Login = () => {
   }
 
   const isValid = useCallback(({ password, email }) => {
-    return password.length > 5 && email.length > 2; // добавить валидацию email
+    return password.length > 5 && email.length > 2; // додати валiдацiю email
   }, []);
 
   const loginUser = useCallback((e) => {
