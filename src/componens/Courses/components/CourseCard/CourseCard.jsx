@@ -6,6 +6,7 @@ import Button from '../../../../common/Button/Button';
 
 import { toLoadCourses } from '../../../../store/courses/actionCreators';
 import { getCourses } from '../../../../store/selectors';
+import { fetchCourseDelete } from '../../../../servisces';
 
 import styles from './CourseCard.module.css';
 
@@ -18,13 +19,14 @@ const CourseCard = ({ cardProps, authorsStr, id }) => {
   const coursesList = useSelector(getCourses);
 
   const onDeleteCourse = useCallback(
-    (e, idToDel) => {
+    async (e, idToDel) => {
       e.preventDefault();
+      const resp = await fetchCourseDelete(idToDel);
+      console.log(resp); // 403 Forbitten
 
       const newCoursesList = coursesList.filter((item) => item.id !== idToDel);
 
       dispatch(toLoadCourses(newCoursesList));
-      // DELETE
     },
     [coursesList]
   );

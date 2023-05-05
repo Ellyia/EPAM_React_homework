@@ -7,6 +7,7 @@ import Button from '../../common/Button/Button.jsx';
 import { useAuth } from '../../hoc/useAuth';
 import { logout } from '../../store/user/actionCreators';
 import { getUser } from '../../store/selectors';
+import { fetchLogout } from '../../servisces';
 
 import styles from './Header.module.css';
 
@@ -22,7 +23,11 @@ const Header = () => {
 
     dispatch(logout());
 
-    signout(() => navigate(url, { replace: true }));
+    signout(async () => {
+      const resp = await fetchLogout();
+      console.log(resp); // 403 Forbitten
+      navigate(url, { replace: true });
+    });
 
     localStorage.clear();
   }, []);

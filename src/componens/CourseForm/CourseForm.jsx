@@ -20,6 +20,7 @@ import {
 
 import { addCourse } from '../../store/courses/actionCreators';
 import { toAddAuthor } from '../../store/authors/actionCreators';
+import { fetchCourseAdd, fetchAuthorAdd } from '../../servisces';
 
 import styles from './CreateCourse.module.css';
 
@@ -51,11 +52,11 @@ const CreateCourse = () => {
   }, [stateForNewCourse]);
 
   const onCreateCourse = useCallback(
-    (e) => {
+    async (e) => {
       e.preventDefault();
       if (isFormValid()) {
         const card = {
-          id: uuidv4(),
+          // id: uuidv4(),
           title: stateForNewCourse.title,
           description: stateForNewCourse.description,
           creationDate: dateGeneration(),
@@ -65,8 +66,11 @@ const CreateCourse = () => {
 
         const newCoursesList = [...coursesList, card];
 
+        const resp = await fetchCourseAdd(card);
+        console.log(resp);
+
         dispatch(addCourse(newCoursesList));
-        // POST /courses/add ?
+
         navigate('/courses');
       } else {
         alert('Please, fill in all fields');
@@ -76,15 +80,18 @@ const CreateCourse = () => {
   );
 
   const onCreateAuthor = useCallback(
-    (e) => {
+    async (e) => {
       e.preventDefault();
       if (stateForNewCourse.name.length >= 2) {
         const author = {
-          id: uuidv4(),
+          // id: uuidv4(),
           name: stateForNewCourse.name,
         };
 
         const newAuthors = [...authorsList, author];
+
+        const resp = await fetchAuthorAdd(author);
+        console.log(resp);
 
         dispatch(toAddAuthor(newAuthors));
 

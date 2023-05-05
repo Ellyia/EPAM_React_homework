@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 
 import Header from './componens/Header/Header';
 import Courses from './componens/Courses/Courses';
-import CreateCourse from './componens/CreateCourse/CreateCourse';
+import CreateCourse from './componens/CourseForm/CourseForm';
 import Registration from './componens/Registration/Registration';
 import Login from './componens/Login/Login';
 import CourseInfo from './componens/CourseInfo/CourseInfo';
