@@ -24,7 +24,7 @@ import { fetchCourseAdd, fetchAuthorAdd } from '../../servisces';
 
 import styles from './CreateCourse.module.css';
 
-const CreateCourse = () => {
+const CreateCourse = ({ role }) => {
   let navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -64,12 +64,11 @@ const CreateCourse = () => {
           authors: stateForNewCourse.idshki, // authorsOfCourse.map(x => x.id),
         };
 
-        const newCoursesList = [...coursesList, card];
-
         const resp = await fetchCourseAdd(card);
         console.log(resp);
 
-        dispatch(addCourse(newCoursesList));
+        // const newCoursesList = [...coursesList, card];
+        // dispatch(addCourse(newCoursesList));
 
         navigate('/courses');
       } else {
@@ -216,80 +215,82 @@ const CreateCourse = () => {
     };
   }, []);
 
-  return (
-    <main className={styles.main}>
-      <div className={styles.title}>
-        <Input
-          placeholdetText='Enter title...'
-          labelText='Title'
-          onChange={onChangeTitle}
-        />
-        <div className={styles.btnCreateCourse}>
-          <Button
-            text='Create course'
-            callbackFunc={addCallbackHandler(onCreateCourse)}
+  if (role) {
+    return (
+      <main className={styles.main}>
+        <div className={styles.title}>
+          <Input
+            placeholdetText='Enter title...'
+            labelText='Title'
+            onChange={onChangeTitle}
+          />
+          <div className={styles.btnCreateCourse}>
+            <Button
+              text='Create course'
+              callbackFunc={addCallbackHandler(onCreateCourse)}
+            />
+          </div>
+        </div>
+
+        <div className={styles.descr}>
+          <label htmlFor='description'>Description</label>
+          <textarea
+            className={styles.textarea}
+            placeholder='Enter description'
+            onChange={onChangeDescr}
+            id='description'
+            minLength='2'
           />
         </div>
-      </div>
 
-      <div className={styles.descr}>
-        <label htmlFor='description'>Description</label>
-        <textarea
-          className={styles.textarea}
-          placeholder='Enter description'
-          onChange={onChangeDescr}
-          id='description'
-          minLength='2'
-        />
-      </div>
+        <div className={styles.wrapper}>
+          <div className={styles.leftBlock}>
+            <div className={styles.addAuthor}>
+              <h4 className={styles.alSelfCenter}>Add author</h4>
+              <Input
+                placeholdetText='Enter author name...'
+                onChange={onAddAuthorName}
+                value={stateForNewCourse.name}
+                minLength={2}
+                htmlFor='authorName'
+                labelText='Author name'
+              />
+              <div className={styles.authorBtn}>
+                <Button text='Create author' callbackFunc={onCreateAuthor} />
+              </div>
+            </div>
 
-      <div className={styles.wrapper}>
-        <div className={styles.leftBlock}>
-          <div className={styles.addAuthor}>
-            <h4 className={styles.alSelfCenter}>Add author</h4>
-            <Input
-              placeholdetText='Enter author name...'
-              onChange={onAddAuthorName}
-              value={stateForNewCourse.name}
-              minLength={2}
-              htmlFor='authorName'
-              labelText='Author name'
-            />
-            <div className={styles.authorBtn}>
-              <Button text='Create author' callbackFunc={onCreateAuthor} />
+            <div className={styles.duration}>
+              <h4 className={styles.alSelfCenter}>Duration</h4>
+              <Input
+                placeholdetText='Enter duration in minutes...'
+                onChange={onChangeDuration}
+                value={stateForNewCourse.duration}
+                htmlFor='duration'
+                labelText='Duration'
+                type='number' // вводится +
+              />
+              <p>
+                Duration: {pipeDuration(stateForNewCourse.duration, '00:00')}{' '}
+                hours
+              </p>
             </div>
           </div>
 
-          <div className={styles.duration}>
-            <h4 className={styles.alSelfCenter}>Duration</h4>
-            <Input
-              placeholdetText='Enter duration in minutes...'
-              onChange={onChangeDuration}
-              value={stateForNewCourse.duration}
-              htmlFor='duration'
-              labelText='Duration'
-              type='number' // вводится +
-            />
-            <p>
-              Duration: {pipeDuration(stateForNewCourse.duration, '00:00')}{' '}
-              hours
-            </p>
+          <div className={styles.authors}>
+            <section>
+              <h4 className={styles.textAlCenter}>Authors</h4>
+              <ul>{createAuthorsList(authorsList)}</ul>
+            </section>
+
+            <section>
+              <h4 className={styles.textAlCenter}>Course authors</h4>
+              <ul>{createCourseAuthorsList(authorsList)}</ul>
+            </section>
           </div>
         </div>
-
-        <div className={styles.authors}>
-          <section>
-            <h4 className={styles.textAlCenter}>Authors</h4>
-            <ul>{createAuthorsList(authorsList)}</ul>
-          </section>
-
-          <section>
-            <h4 className={styles.textAlCenter}>Course authors</h4>
-            <ul>{createCourseAuthorsList(authorsList)}</ul>
-          </section>
-        </div>
-      </div>
-    </main>
-  );
+      </main>
+    );
+  }
 };
 export default CreateCourse;

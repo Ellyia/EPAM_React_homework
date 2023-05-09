@@ -38,7 +38,7 @@ export const fetchRegistration = async (newUser) => {
   return data;
 };
 
-// logout
+// logout +
 export const fetchLogout = async () => {
   const resp = await fetch('http://localhost:4000/logout', {
     method: 'DELETE',
@@ -46,12 +46,11 @@ export const fetchLogout = async () => {
       Authorization: `${localStorage.getItem('result')}`,
     },
   });
-  const data = await resp.json();
-
-  return data;
+  console.log('resp', resp);
+  return resp;
 };
 
-// users/me
+// users/me +
 export const fetchUsersMe = async () => {
   const resp = await fetch('http://localhost:4000/users/me', {
     method: 'GET',
@@ -64,12 +63,12 @@ export const fetchUsersMe = async () => {
   return data;
 };
 
-// /courses/{id} [DELETE]
+// /courses/{id} [DELETE] +
 export const fetchCourseDelete = async (id) => {
   const resp = await fetch(`http://localhost:4000/courses/${id}`, {
     method: 'DELETE',
     headers: {
-      Authorization: `${localStorage.getItem('result')}`,
+      Authorization: `${localStorage.getItem('result')}`, // if admin
     },
   });
   const data = await resp.json();

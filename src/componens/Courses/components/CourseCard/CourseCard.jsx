@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'; //
 import Button from '../../../../common/Button/Button';
 
 import { toLoadCourses } from '../../../../store/courses/actionCreators';
-import { getCourses } from '../../../../store/selectors';
+import { getCourses, getUser } from '../../../../store/selectors';
 import { fetchCourseDelete } from '../../../../servisces';
 
 import styles from './CourseCard.module.css';
@@ -17,6 +17,7 @@ const CourseCard = ({ cardProps, authorsStr, id }) => {
   const dispatch = useDispatch();
 
   const coursesList = useSelector(getCourses);
+  const user = useSelector(getUser);
 
   const onDeleteCourse = useCallback(
     async (e, idToDel) => {
@@ -70,16 +71,20 @@ const CourseCard = ({ cardProps, authorsStr, id }) => {
             text='Show course'
             callbackFunc={addCallbackHandler(onShowCourse, `/courses/${id}`)}
           />
-          <Button
-            text='.'
-            style={styles.btnUpdate}
-            callbackFunc={onUpdateCourse}
-          />
-          <Button
-            text='.'
-            style={styles.btnDelete}
-            callbackFunc={addCallbackHandler(onDeleteCourse, id)}
-          />
+          {user.role === 'admin' ? (
+            <>
+              <Button
+                text='.'
+                style={styles.btnUpdate}
+                callbackFunc={onUpdateCourse}
+              />
+              <Button
+                text='.'
+                style={styles.btnDelete}
+                callbackFunc={addCallbackHandler(onDeleteCourse, id)}
+              />
+            </>
+          ) : null}
         </div>
       </div>
     </li>

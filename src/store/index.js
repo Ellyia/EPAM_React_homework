@@ -39,6 +39,9 @@ const stringMiddleware = () => (dispatch) => (action) => {
 //   };
 
 // const store = configureStore({ reducer }, enhanser);
-const store = configureStore({ reducer }, applyMiddleware(ReduxThunk, stringMiddleware));
+const store = configureStore(
+  { reducer },
+  applyMiddleware(ReduxThunk, stringMiddleware)
+);
 
 export default store;

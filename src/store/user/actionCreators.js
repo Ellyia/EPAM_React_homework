@@ -1,5 +1,15 @@
 import { LOGIN, LOGOUT, USERS_ME } from './actionTypes';
 
+export const actionLogout = (request) => (dispatch) => {
+  request()
+    .then((data) => {
+      if (data.ok) {
+        dispatch(logout());
+      }
+    })
+    .catch((err) => console.log('err', err));
+}; //
+
 export const addUser = (data) => ({
   type: LOGIN,
   payload: data,
@@ -8,6 +18,13 @@ export const addUser = (data) => ({
 export const logout = () => ({
   type: LOGOUT,
 });
+
+// export const actionUsersMe = (request) = (dispatch) => {
+//   request().
+//     then((data) => {
+
+//     })
+// }
 
 export const usersMe = (data) => ({
   type: USERS_ME,

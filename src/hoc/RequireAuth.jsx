@@ -11,7 +11,7 @@ const RequireAuth = ({ children }) => {
     return <Navigate to='/login' state={{ from: location }} />;
   }
 
-  return children;
+  return children || <Navigate to='/courses' />;
 };
 
 export default RequireAuth;

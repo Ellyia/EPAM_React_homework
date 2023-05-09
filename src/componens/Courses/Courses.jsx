@@ -6,12 +6,12 @@ import CourseCard from './components/CourseCard/CourseCard';
 import Button from '../../common/Button/Button';
 import SearchBar from './components/SearchBar/SearchBar';
 
-import { toLoadCourses } from '../../store/courses/actionCreators';
-import { toLoadAuthors } from '../../store/authors/actionCreators';
+import { fetchCourses } from '../../store/courses/actionCreators';
+import { fetchAuthors } from '../../store/authors/actionCreators';
 
 import { loadCourses, loadAuthors } from '../../servisces';
 
-import { getCourses, getAuthors } from '../../store/selectors';
+import { getCourses, getAuthors, getUser } from '../../store/selectors';
 
 import styles from './Courses.module.css';
 
@@ -19,38 +19,43 @@ const Courses = () => {
   let navigate = useNavigate();
   const dispatch = useDispatch();
 
+  // const courses = useLoaderData();
+  // dispatch(toLoadCourses(courses));
+
+  // useEffect(() => {
+  //   (async () => {
+  //     const data = await loadCourses();
+  //     dispatch(toLoadCourses(data));
+  //   })();
+  // }, []);
   useEffect(() => {
-    (async () => {
-      const data = await loadCourses();
-      dispatch(toLoadCourses(data));
-    })();
+    dispatch(fetchCourses(loadCourses));
   }, []);
 
   useEffect(() => {
-    (async () => {
-      dispatch(toLoadAuthors(await loadAuthors()));
-    })();
+    dispatch(fetchAuthors(loadAuthors));
+    // (async () => {
+    //   dispatch(toLoadAuthors(await loadAuthors()));
+    // })();
   }, []);
 
   const coursesList = useSelector(getCourses, shallowEqual);
   const authorsList = useSelector(getAuthors, shallowEqual);
+  const user = useSelector(getUser, shallowEqual);
 
   const [searchPhrase, setSearchPhrase] = useState('');
 
-  const searchCourse = useCallback(
-    (items, searchPhrase) => {
-      if (searchPhrase?.length === 0) {
-        return items;
-      }
+  const searchCourse = useCallback((items, searchPhrase) => {
+    if (searchPhrase?.length === 0) {
+      return items;
+    }
 
-      return items.filter((el) => {
-        const elName = el.title.toString().toLowerCase();
-        const termLC = searchPhrase.toString().toLowerCase();
-        return elName.indexOf(termLC) > -1 || el.id.indexOf(termLC) > -1;
-      });
-    },
-    [searchPhrase, coursesList]
-  );
+    return items.filter((el) => {
+      const elName = el.title.toString().toLowerCase();
+      const termLC = searchPhrase.toString().toLowerCase();
+      return elName.indexOf(termLC) > -1 || el.id.indexOf(termLC) > -1;
+    });
+  }, []);
 
   const onUpdateSearch = useCallback((searchPhrase) => {
     setSearchPhrase(searchPhrase);
@@ -90,10 +95,12 @@ const Courses = () => {
       <div className={styles.main}>
         <div className={styles.searchPanel}>
           <SearchBar onUpdateSearch={onUpdateSearch} />
-          <Button
-            text={'Add new course'}
-            callbackFunc={addCallbackHandler(onAddNewCourse, '/courses/add')}
-          />
+          {user.role === 'admin' ? (
+            <Button
+              text={'Add new course'}
+              callbackFunc={addCallbackHandler(onAddNewCourse, '/courses/add')}
+            />
+          ) : null}
         </div>
         <ul className={styles.cards}>
           {cards?.map(({ id, cardProps, authorsStr }) => (
@@ -112,4 +119,11 @@ const Courses = () => {
   }
 };
 
+// const coursesLoader = async ({request, params}) => {
+//   console.log(request, params);
+//   const data = await loadCourses();
+//   return data;
+// }
+
 export default Courses;
+// export {coursesLoader};
