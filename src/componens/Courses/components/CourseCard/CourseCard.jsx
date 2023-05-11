@@ -23,17 +23,21 @@ const CourseCard = ({ cardProps, authorsStr, id }) => {
     async (e, idToDel) => {
       e.preventDefault();
       const resp = await fetchCourseDelete(idToDel);
-      console.log(resp); // 403 Forbitten
+      console.log(resp); //
 
-      const newCoursesList = coursesList.filter((item) => item.id !== idToDel);
-
-      dispatch(toLoadCourses(newCoursesList));
+      if (resp.successful) {
+        const newCoursesList = coursesList.filter(
+          (item) => item.id !== idToDel
+        );
+        dispatch(toLoadCourses(newCoursesList));
+      }
     },
     [coursesList]
   );
 
-  const onUpdateCourse = useCallback((e) => {
+  const onUpdateCourse = useCallback((e, to) => {
     e.preventDefault();
+    navigate(to);
     // PUT
   }, []);
 
@@ -76,7 +80,10 @@ const CourseCard = ({ cardProps, authorsStr, id }) => {
               <Button
                 text='.'
                 style={styles.btnUpdate}
-                callbackFunc={onUpdateCourse}
+                callbackFunc={addCallbackHandler(
+                  onUpdateCourse,
+                  `/courses/update/${id}`
+                )}
               />
               <Button
                 text='.'

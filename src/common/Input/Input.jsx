@@ -7,6 +7,7 @@ const Input = ({
   labelText,
   type,
   name,
+  defaultValue,
 }) => {
   return (
     <label htmlFor={htmlFor} className={styles.label}>
@@ -18,6 +19,7 @@ const Input = ({
         id={htmlFor}
         onChange={onChange}
         placeholder={placeholdetText}
+        defaultValue={defaultValue || ''}
       />
     </label>
   );

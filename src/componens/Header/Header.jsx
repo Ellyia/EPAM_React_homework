@@ -18,27 +18,25 @@ const Header = () => {
   const { signout, token } = useAuth();
   const { name } = useSelector(getUser);
 
-  // const callbackFunc = useCallback((e, url) => {
-  //   e.preventDefault();
+  const callbackFunc = useCallback((e, url) => {
+    e.preventDefault();
 
-  //   dispatch(logout());
+    signout(async () => {
+      const resp = await fetchLogout();
+      resp.ok ? dispatch(logout()) : console.log(resp);
+      navigate(url, { replace: true });
+    });
 
-  //   signout(async () => {
-  //     const resp = await fetchLogout();
-  //     // 403 Forbitten
+    localStorage.clear();
+  }, []);
+
+  // const callbackFunc = useCallback((url) => {
+  //   signout(() => {
+  //     dispatch(actionLogout(fetchLogout));
   //     navigate(url, { replace: true });
   //   });
-
   //   localStorage.clear();
-  // }, []);
-
-  const callbackFunc = useCallback((e, url) => {
-    dispatch(actionLogout(fetchLogout));
-    signout(() => {
-      navigate(url, { replace: true });
-      localStorage.clear();
-    });
-  }, []);
+  // }, []); // doesn't work
 
   const addCallbackHandler = useCallback(
     (url) => {

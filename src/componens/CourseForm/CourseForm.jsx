@@ -1,7 +1,8 @@
 import { useCallback, useReducer } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router';
 
 import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
@@ -20,18 +21,50 @@ import {
 
 import { addCourse } from '../../store/courses/actionCreators';
 import { toAddAuthor } from '../../store/authors/actionCreators';
-import { fetchCourseAdd, fetchAuthorAdd } from '../../servisces';
+import {
+  fetchCourseAdd,
+  fetchAuthorAdd,
+  fetchChangeCourse,
+} from '../../servisces';
 
 import styles from './CreateCourse.module.css';
 
-const CreateCourse = ({ role }) => {
+const CourseForm = ({ mode }) => {
   let navigate = useNavigate();
   const dispatch = useDispatch();
 
+  let { courseId } = useParams();
+
   const authorsList = useSelector((state) => state.authorsReducer.authors);
   const coursesList = useSelector((state) => state.coursesReducer.courses);
+  console.log(mode);
 
-  const stateInit = {
+  let stateInitUpdate = {};
+  let courseToUpdate;
+  let index;
+
+  if (mode === 'update') {
+    courseToUpdate = coursesList.find((course) => course.id === courseId);
+    index = coursesList.indexOf(courseToUpdate);
+    console.log('courseToUpdate', courseToUpdate);
+    console.log(authorsList, index);
+
+    const items = authorsList.filter((item) =>
+      courseToUpdate.authors.includes(item.id)
+    );
+
+    stateInitUpdate = {
+      id: courseToUpdate.id,
+      name: '',
+      duration: courseToUpdate.duration,
+      description: courseToUpdate.description,
+      title: courseToUpdate.title,
+      idshki: courseToUpdate.authors,
+      authorsOfCourse: items,
+    };
+  }
+
+  const stateInitCreate = {
     name: '',
     duration: '',
     description: '',
@@ -39,6 +72,8 @@ const CreateCourse = ({ role }) => {
     idshki: [],
     authorsOfCourse: [],
   };
+
+  const stateInit = mode === 'update' ? stateInitUpdate : stateInitCreate;
 
   const [stateForNewCourse, dispatchLocal] = useReducer(reducer, stateInit);
 
@@ -60,15 +95,32 @@ const CreateCourse = ({ role }) => {
           title: stateForNewCourse.title,
           description: stateForNewCourse.description,
           creationDate: dateGeneration(),
-          duration: pipeDuration(stateForNewCourse.duration),
+          duration: +stateForNewCourse.duration,
+          // duration: pipeDuration(stateForNewCourse.duration),
           authors: stateForNewCourse.idshki, // authorsOfCourse.map(x => x.id),
         };
 
-        const resp = await fetchCourseAdd(card);
-        console.log(resp);
+        let resp = {};
+        let newCoursesList = [];
 
-        // const newCoursesList = [...coursesList, card];
-        // dispatch(addCourse(newCoursesList));
+        if (mode === 'update') {
+          resp = await fetchChangeCourse(card, stateForNewCourse.id);
+          console.log('fetch', resp);
+          console.log(index);
+          newCoursesList = [
+            ...coursesList.slice(0, index),
+            resp.result,
+            ...coursesList.slice(index + 1),
+          ];
+        } else {
+          resp = await fetchCourseAdd(card);
+          console.log('fetch', resp);
+
+          newCoursesList = [...coursesList, resp.result];
+        }
+
+        dispatch(addCourse(newCoursesList));
+        console.log(coursesList);
 
         navigate('/courses');
       } else {
@@ -87,14 +139,14 @@ const CreateCourse = ({ role }) => {
           name: stateForNewCourse.name,
         };
 
-        const newAuthors = [...authorsList, author];
-
         const resp = await fetchAuthorAdd(author);
-        console.log(resp);
+        console.log('author', resp.result);
+        if (resp.successful) {
+          const newAuthors = [...authorsList, resp.result];
+          dispatch(toAddAuthor(newAuthors));
+        }
 
-        dispatch(toAddAuthor(newAuthors));
-
-        dispatchLocal(deleteName());
+        // dispatchLocal(deleteName()); // from value
       }
     },
     [stateForNewCourse.name, authorsList]
@@ -215,82 +267,84 @@ const CreateCourse = ({ role }) => {
     };
   }, []);
 
-  if (role) {
-    return (
-      <main className={styles.main}>
-        <div className={styles.title}>
-          <Input
-            placeholdetText='Enter title...'
-            labelText='Title'
-            onChange={onChangeTitle}
+  // if (role) {
+  return (
+    <main className={styles.main}>
+      <div className={styles.title}>
+        <Input
+          placeholdetText='Enter title...'
+          labelText='Title'
+          onChange={onChangeTitle}
+          defaultValue={stateForNewCourse.title}
+        />
+        <div className={styles.btnCreateCourse}>
+          <Button
+            text='Create course'
+            callbackFunc={addCallbackHandler(onCreateCourse)}
           />
-          <div className={styles.btnCreateCourse}>
-            <Button
-              text='Create course'
-              callbackFunc={addCallbackHandler(onCreateCourse)}
+        </div>
+      </div>
+
+      <div className={styles.descr}>
+        <label htmlFor='description'>Description</label>
+        <textarea
+          className={styles.textarea}
+          placeholder='Enter description'
+          onChange={onChangeDescr}
+          id='description'
+          minLength='2'
+          defaultValue={stateForNewCourse.description}
+        />
+      </div>
+
+      <div className={styles.wrapper}>
+        <div className={styles.leftBlock}>
+          <div className={styles.addAuthor}>
+            <h4 className={styles.alSelfCenter}>Add author</h4>
+            <Input
+              placeholdetText='Enter author name...'
+              onChange={onAddAuthorName}
+              defaultValue={stateForNewCourse.name}
+              minLength={2}
+              htmlFor='authorName'
+              labelText='Author name'
             />
-          </div>
-        </div>
-
-        <div className={styles.descr}>
-          <label htmlFor='description'>Description</label>
-          <textarea
-            className={styles.textarea}
-            placeholder='Enter description'
-            onChange={onChangeDescr}
-            id='description'
-            minLength='2'
-          />
-        </div>
-
-        <div className={styles.wrapper}>
-          <div className={styles.leftBlock}>
-            <div className={styles.addAuthor}>
-              <h4 className={styles.alSelfCenter}>Add author</h4>
-              <Input
-                placeholdetText='Enter author name...'
-                onChange={onAddAuthorName}
-                value={stateForNewCourse.name}
-                minLength={2}
-                htmlFor='authorName'
-                labelText='Author name'
-              />
-              <div className={styles.authorBtn}>
-                <Button text='Create author' callbackFunc={onCreateAuthor} />
-              </div>
-            </div>
-
-            <div className={styles.duration}>
-              <h4 className={styles.alSelfCenter}>Duration</h4>
-              <Input
-                placeholdetText='Enter duration in minutes...'
-                onChange={onChangeDuration}
-                value={stateForNewCourse.duration}
-                htmlFor='duration'
-                labelText='Duration'
-                type='number' // вводится +
-              />
-              <p>
-                Duration: {pipeDuration(stateForNewCourse.duration, '00:00')}{' '}
-                hours
-              </p>
+            <div className={styles.authorBtn}>
+              <Button text='Create author' callbackFunc={onCreateAuthor} />
             </div>
           </div>
 
-          <div className={styles.authors}>
-            <section>
-              <h4 className={styles.textAlCenter}>Authors</h4>
-              <ul>{createAuthorsList(authorsList)}</ul>
-            </section>
-
-            <section>
-              <h4 className={styles.textAlCenter}>Course authors</h4>
-              <ul>{createCourseAuthorsList(authorsList)}</ul>
-            </section>
+          <div className={styles.duration}>
+            <h4 className={styles.alSelfCenter}>Duration</h4>
+            <Input
+              placeholdetText='Enter duration in minutes...'
+              onChange={onChangeDuration}
+              defaultValue={stateForNewCourse.duration}
+              htmlFor='duration'
+              labelText='Duration'
+              type='number' // вводится +
+            />
+            <p>
+              Duration: {pipeDuration(stateForNewCourse.duration, '00:00')}{' '}
+              hours
+            </p>
           </div>
         </div>
-      </main>
-    );
-  }
+
+        <div className={styles.authors}>
+          <section>
+            <h4 className={styles.textAlCenter}>Authors</h4>
+            <ul>{createAuthorsList(authorsList)}</ul>
+          </section>
+
+          <section>
+            <h4 className={styles.textAlCenter}>Course authors</h4>
+            <ul>{createCourseAuthorsList(authorsList)}</ul>
+          </section>
+        </div>
+      </div>
+    </main>
+  );
+  // }
 };
-export default CreateCourse;
+export default CourseForm;

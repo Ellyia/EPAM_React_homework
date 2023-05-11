@@ -5,7 +5,7 @@ const userInitialState = {
   name: '',
   email: '',
   token: '',
-  role: '', // new value
+  role: '',
 };
 
 export default function userReducer(state = userInitialState, action) {
@@ -25,6 +25,7 @@ export default function userReducer(state = userInitialState, action) {
         token: '',
         email: '',
         name: '',
+        role: '',
       };
     case USERS_ME:
       return {

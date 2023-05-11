@@ -46,6 +46,7 @@ export const fetchLogout = async () => {
       Authorization: `${localStorage.getItem('result')}`,
     },
   });
+  // const data = await resp.json();
   console.log('resp', resp);
   return resp;
 };
@@ -59,11 +60,11 @@ export const fetchUsersMe = async () => {
     },
   });
   const data = await resp.json();
-
+  console.log('resp', data);
   return data;
 };
 
-// /courses/{id} [DELETE] +
+// /courses/{id} [DELETE]
 export const fetchCourseDelete = async (id) => {
   const resp = await fetch(`http://localhost:4000/courses/${id}`, {
     method: 'DELETE',
@@ -72,7 +73,7 @@ export const fetchCourseDelete = async (id) => {
     },
   });
   const data = await resp.json();
-
+  console.log('id.del', data);
   return data;
 };
 
@@ -92,13 +93,14 @@ export const fetchCourseAdd = async (newCourse) => {
 };
 
 // /courses/{id} [PUT]
-export const fetchChangeCourse = async (changedCourse) => {
-  const resp = await fetch('http://localhost:4000/courses/add', {
+export const fetchChangeCourse = async (changedCourse, id) => {
+  const resp = await fetch(`http://localhost:4000/courses/${id}`, {
     method: 'PUT',
     body: JSON.stringify(changedCourse),
     headers: {
       'Content-Type': 'application/json',
       Authorization: `${localStorage.getItem('result')}`,
+      id: `${id}`,
     },
   });
   const data = await resp.json();
@@ -108,7 +110,7 @@ export const fetchChangeCourse = async (changedCourse) => {
 
 // /authors/add [POST]
 export const fetchAuthorAdd = async (newAuthor) => {
-  const resp = await fetch('http://localhost:4000/courses/add', {
+  const resp = await fetch('http://localhost:4000/authors/add', {
     method: 'POST',
     body: JSON.stringify(newAuthor),
     headers: {

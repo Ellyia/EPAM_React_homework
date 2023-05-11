@@ -6,7 +6,11 @@ import Button from '../../common/Button/Button';
 import Input from '../../common/Input/Input';
 import { useAuth } from '../../hoc/useAuth';
 
-import { addUser, usersMe } from '../../store/user/actionCreators';
+import {
+  addUser,
+  actionUsersMe,
+  usersMe,
+} from '../../store/user/actionCreators';
 import { fetchLogin, fetchUsersMe } from '../../servisces';
 
 import styles from './Login.module.css';
@@ -22,22 +26,22 @@ const Login = () => {
   const { signin } = useAuth();
 
   // де я маю це прописати, щоб коректно працювало?
-  // if (localStorage.getItem('result')) {
-  //   signin(localStorage.getItem('result'), async () => {
-  //     const resp = await fetchUsersMe();
-  //     console.log('me', resp);
-  //     dispatch(usersMe(resp.result));
+  // useEffect(() => {
+  //   if (localStorage.getItem('result')) {
+  //     signin(localStorage.getItem('result'), async () => {
+  //       const resp = await fetchUsersMe();
+  //       console.log('me', resp);
+  //       dispatch(usersMe(resp.result));
 
-  //     navigate(fromPage, { replace: true });
-  //   });
-  // }
+  //       navigate(fromPage, { replace: true });
+  //     });
+  //   }
+  // }, []);
+
   useEffect(() => {
     if (localStorage.getItem('result')) {
-      signin(localStorage.getItem('result'), async () => {
-        const resp = await fetchUsersMe();
-        console.log('me', resp);
-        dispatch(usersMe(resp.result));
-
+      signin(localStorage.getItem('result'), () => {
+        dispatch(actionUsersMe(fetchUsersMe));
         navigate(fromPage, { replace: true });
       });
     }
