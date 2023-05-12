@@ -1,48 +1,69 @@
-import { useState, useContext, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate, Navigate } from 'react-router-dom';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 
 import CourseCard from './components/CourseCard/CourseCard';
 import Button from '../../common/Button/Button';
 import SearchBar from './components/SearchBar/SearchBar';
-import { mockedListsContext } from '../../context';
+
+import { toLoadCourses } from '../../store/courses/actionCreators';
+import { toLoadAuthors } from '../../store/authors/actionCreators';
+
+import { loadCourses, loadAuthors } from '../../servisces';
+
+import { getCourses, getAuthors } from '../../store/selectors';
 
 import styles from './Courses.module.css';
 
-// const Courses = ({ callbackFunc }) => {
 const Courses = () => {
-  let navigate = useNavigate(); // useCallback ?
+  let navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const mockedLists = useContext(mockedListsContext);
+  useEffect(() => {
+    (async () => {
+      const data = await loadCourses();
+      dispatch(toLoadCourses(data));
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      dispatch(toLoadAuthors(await loadAuthors()));
+    })();
+  }, []);
+
+  const coursesList = useSelector(getCourses, shallowEqual);
+  const authorsList = useSelector(getAuthors, shallowEqual);
 
   const [searchPhrase, setSearchPhrase] = useState('');
 
-  const searchCourse = useCallback((items, searchPhrase) => {
-    if (searchPhrase?.length === 0) {
-      return items;
-    }
+  const searchCourse = useCallback(
+    (items, searchPhrase) => {
+      if (searchPhrase?.length === 0) {
+        return items;
+      }
 
-    return items.filter((el) => {
-      const elName = el.title.toString().toLowerCase();
-      const termLC = searchPhrase.toString().toLowerCase();
-      return elName.indexOf(termLC) > -1 || el.id.indexOf(termLC) > -1;
-    });
-  }, []);
+      return items.filter((el) => {
+        const elName = el.title.toString().toLowerCase();
+        const termLC = searchPhrase.toString().toLowerCase();
+        return elName.indexOf(termLC) > -1 || el.id.indexOf(termLC) > -1;
+      });
+    },
+    [searchPhrase, coursesList]
+  );
 
   const onUpdateSearch = useCallback((searchPhrase) => {
     setSearchPhrase(searchPhrase);
   }, []);
 
-  const visibleCourses = searchCourse(
-    mockedLists.mockedCoursesList,
-    searchPhrase
-  );
+  const visibleCourses = searchCourse(coursesList, searchPhrase);
 
-  const cards = visibleCourses.map((cardData) => {
+  const cards = visibleCourses?.map((cardData) => {
     const { id, ...cardProps } = cardData;
     const authors = cardProps.authors;
 
-    let authorsStr = mockedLists.mockedAuthorsList
-      .filter((author) => authors.includes(author.id))
+    let authorsStr = authorsList
+      ?.filter((author) => authors.includes(author.id))
       .map((x) => x.name)
       .join(', ');
 
@@ -64,29 +85,31 @@ const Courses = () => {
     };
   }, []);
 
-  return (
-    <div className={styles.main}>
-      <div className={styles.searchPanel}>
-        <SearchBar onUpdateSearch={onUpdateSearch} />
-        {/* <Link to='/courses/add'> */}
-        <Button
-          text={'Add new course'}
-          callbackFunc={addCallbackHandler(onAddNewCourse, '/courses/add')}
-        />
-        {/* </Link> */}
-      </div>
-      <ul className={styles.courses}>
-        {cards.map(({ id, cardProps, authorsStr }) => (
-          <CourseCard
-            key={id}
-            cardProps={cardProps}
-            authorsStr={authorsStr}
-            id={id}
+  if (localStorage.getItem('result')) {
+    return (
+      <div className={styles.main}>
+        <div className={styles.searchPanel}>
+          <SearchBar onUpdateSearch={onUpdateSearch} />
+          <Button
+            text={'Add new course'}
+            callbackFunc={addCallbackHandler(onAddNewCourse, '/courses/add')}
           />
-        ))}
-      </ul>
-    </div>
-  );
+        </div>
+        <ul className={styles.cards}>
+          {cards?.map(({ id, cardProps, authorsStr }) => (
+            <CourseCard
+              key={id}
+              cardProps={cardProps}
+              authorsStr={authorsStr}
+              id={id}
+            />
+          ))}
+        </ul>
+      </div>
+    );
+  } else {
+    return <Navigate to='/login' replace />;
+  }
 };
 
 export default Courses;

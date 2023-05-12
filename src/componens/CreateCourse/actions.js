@@ -1,5 +1,6 @@
 import {
   ACTION_NAME,
+  ACTION_DEL_NAME,
   ACTION_DURATION,
   ACTION_DESCRIPTION,
   ACTION_TITLE,
@@ -20,6 +21,8 @@ export const duration = (e) => ({
 });
 
 export const name = (e) => ({ type: ACTION_NAME, payload: e.target.value });
+
+export const deleteName = () => ({ type: ACTION_DEL_NAME });
 
 export const deleteAuthor = (arridshki, arrAuthorsOfCourse) => ({
   type: ACTION_DELETEAUTHOR,

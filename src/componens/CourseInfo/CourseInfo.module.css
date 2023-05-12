@@ -1,0 +1,25 @@
+.info {
+  margin: 10px;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid rgb(110, 200, 252);
+  border-radius: 5px;
+}
+
+.link {
+  text-decoration: none;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.description {
+  width: 70%;
+}
