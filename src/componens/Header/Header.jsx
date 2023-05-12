@@ -52,7 +52,9 @@ const Header = () => {
       <header className={styles.header}>
         <Logo />
         <div className={styles.flex}>
-          <div className={styles.marginRight}>{!!token ? name : ''}</div>
+          <div className={styles.marginRight}>
+            {!!token ? name || 'you are admin' : ''}
+          </div>
           {!!token && (
             <Button text='Logout' callbackFunc={addCallbackHandler('/login')} />
           )}

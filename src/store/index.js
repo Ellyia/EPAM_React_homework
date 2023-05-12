@@ -1,16 +1,16 @@
-import { combineReducers, applyMiddleware } from 'redux';
-import { configureStore } from '@reduxjs/toolkit';
-import ReduxThunk from 'redux-thunk';
+// import { combineReducers, applyMiddleware } from 'redux';
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
+// import ReduxThunk from 'redux-thunk';
 
 import authorsReducer from './authors/reducer';
 import coursesReducer from './courses/reducer';
 import userReducer from './user/reducer';
 
-const reducer = combineReducers({
-  authorsReducer,
-  coursesReducer,
-  userReducer,
-});
+// const reducer = combineReducers({
+//   authorsReducer,
+//   coursesReducer,
+//   userReducer,
+// });
 
 const stringMiddleware = () => (dispatch) => (action) => {
   if (typeof action === 'string') {
@@ -39,9 +39,20 @@ const stringMiddleware = () => (dispatch) => (action) => {
 //   };
 
 // const store = configureStore({ reducer }, enhanser);
-const store = configureStore(
-  { reducer },
-  applyMiddleware(ReduxThunk, stringMiddleware)
-);
+// const store = configureStore(
+//   { reducer },
+//   applyMiddleware(ReduxThunk, stringMiddleware)
+// );
+
+const store = configureStore({
+  reducer: {
+    authorsReducer,
+    coursesReducer,
+    userReducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(stringMiddleware),
+  devTools: process.env.NODE_ENV !== 'production',
+});
 
 export default store;

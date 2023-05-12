@@ -38,14 +38,14 @@ const Login = () => {
   //   }
   // }, []);
 
-  useEffect(() => {
-    if (localStorage.getItem('result')) {
-      signin(localStorage.getItem('result'), () => {
-        dispatch(actionUsersMe(fetchUsersMe));
-        navigate(fromPage, { replace: true });
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  if (localStorage.getItem('result')) {
+    signin(localStorage.getItem('result'), () => {
+      dispatch(actionUsersMe(fetchUsersMe));
+      navigate(fromPage, { replace: true });
+    });
+  }
+  // }, []);
 
   const isValid = useCallback(({ password, email }) => {
     return password.length > 5 && email.length > 2; // додати валiдацiю email

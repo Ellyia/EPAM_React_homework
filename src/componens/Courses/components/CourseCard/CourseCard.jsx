@@ -19,6 +19,8 @@ const CourseCard = ({ cardProps, authorsStr, id }) => {
   const coursesList = useSelector(getCourses);
   const user = useSelector(getUser);
 
+  console.log('user', user);
+
   const onDeleteCourse = useCallback(
     async (e, idToDel) => {
       e.preventDefault();

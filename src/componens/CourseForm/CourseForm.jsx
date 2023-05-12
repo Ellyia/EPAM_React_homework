@@ -1,5 +1,4 @@
 import { useCallback, useReducer } from 'react';
-// import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
@@ -91,12 +90,10 @@ const CourseForm = ({ mode }) => {
       e.preventDefault();
       if (isFormValid()) {
         const card = {
-          // id: uuidv4(),
           title: stateForNewCourse.title,
           description: stateForNewCourse.description,
           creationDate: dateGeneration(),
           duration: +stateForNewCourse.duration,
-          // duration: pipeDuration(stateForNewCourse.duration),
           authors: stateForNewCourse.idshki, // authorsOfCourse.map(x => x.id),
         };
 
@@ -135,7 +132,6 @@ const CourseForm = ({ mode }) => {
       e.preventDefault();
       if (stateForNewCourse.name.length >= 2) {
         const author = {
-          // id: uuidv4(),
           name: stateForNewCourse.name,
         };
 

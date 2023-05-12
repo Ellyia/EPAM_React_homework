@@ -26,7 +26,9 @@ const App = () => {
         <Routes>
           <Route path='/' element={<Header />}>
             <Route path='registration' element={<Registration />}></Route>
+            
             <Route path='login' element={<Login />}></Route>
+
             <Route
               index
               // path='courses'
@@ -64,7 +66,7 @@ const App = () => {
               }
             ></Route>
           </Route>
-          <Route path='*' element={<Navigate to='/courses' replace />} />
+          <Route path='*' element={<Navigate to='/' replace />} />
         </Routes>
       </AuthProvider>
     </div>
