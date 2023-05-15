@@ -14,7 +14,7 @@ import {
 import { fetchLogin, fetchUsersMe } from '../../servisces';
 
 import styles from './Login.module.css';
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -26,18 +26,6 @@ const Login = () => {
   const { signin } = useAuth();
 
   // де я маю це прописати, щоб коректно працювало?
-  // useEffect(() => {
-  //   if (localStorage.getItem('result')) {
-  //     signin(localStorage.getItem('result'), async () => {
-  //       const resp = await fetchUsersMe();
-  //       console.log('me', resp);
-  //       dispatch(usersMe(resp.result));
-
-  //       navigate(fromPage, { replace: true });
-  //     });
-  //   }
-  // }, []);
-
   // useEffect(() => {
   if (localStorage.getItem('result')) {
     signin(localStorage.getItem('result'), () => {

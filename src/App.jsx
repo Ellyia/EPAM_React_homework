@@ -12,13 +12,11 @@ import RequireAuth from './hoc/RequireAuth';
 import { AuthProvider } from './hoc/AuthProvider';
 import PrivateRoute from './componens/PrivateRouter/PrivateRouter';
 import { getUser } from './store/selectors';
-// import { useAuth } from './hoc/useAuth';
 
 import app from './App.css';
 
 const App = () => {
   const user = useSelector(getUser);
-  // const { token } = useAuth();
 
   return (
     <div className={app}>
@@ -26,12 +24,11 @@ const App = () => {
         <Routes>
           <Route path='/' element={<Header />}>
             <Route path='registration' element={<Registration />}></Route>
-            
+
             <Route path='login' element={<Login />}></Route>
 
             <Route
               index
-              // path='courses'
               element={
                 <RequireAuth>
                   <Courses />

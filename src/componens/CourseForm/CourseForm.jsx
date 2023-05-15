@@ -142,7 +142,7 @@ const CourseForm = ({ mode }) => {
           dispatch(toAddAuthor(newAuthors));
         }
 
-        // dispatchLocal(deleteName()); // from value
+        dispatchLocal(deleteName());
       }
     },
     [stateForNewCourse.name, authorsList]
@@ -263,7 +263,6 @@ const CourseForm = ({ mode }) => {
     };
   }, []);
 
-  // if (role) {
   return (
     <main className={styles.main}>
       <div className={styles.title}>
@@ -318,7 +317,7 @@ const CourseForm = ({ mode }) => {
               defaultValue={stateForNewCourse.duration}
               htmlFor='duration'
               labelText='Duration'
-              type='number' // вводится +
+              type='number' // вводиться +
             />
             <p>
               Duration: {pipeDuration(stateForNewCourse.duration, '00:00')}{' '}
@@ -341,6 +340,5 @@ const CourseForm = ({ mode }) => {
       </div>
     </main>
   );
-  // }
 };
 export default CourseForm;

@@ -19,24 +19,12 @@ const Courses = () => {
   let navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // const courses = useLoaderData();
-  // dispatch(toLoadCourses(courses));
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const data = await loadCourses();
-  //     dispatch(toLoadCourses(data));
-  //   })();
-  // }, []);
   useEffect(() => {
     dispatch(fetchCourses(loadCourses));
   }, []);
 
   useEffect(() => {
     dispatch(fetchAuthors(loadAuthors));
-    // (async () => {
-    //   dispatch(toLoadAuthors(await loadAuthors()));
-    // })();
   }, []);
 
   const coursesList = useSelector(getCourses, shallowEqual);
@@ -119,11 +107,4 @@ const Courses = () => {
   }
 };
 
-// const coursesLoader = async ({request, params}) => {
-//   console.log(request, params);
-//   const data = await loadCourses();
-//   return data;
-// }
-
 export default Courses;
-// export {coursesLoader};

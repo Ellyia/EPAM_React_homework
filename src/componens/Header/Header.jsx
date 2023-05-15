@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Logo from './components/Logo/Logo.jsx';
 import Button from '../../common/Button/Button.jsx';
 import { useAuth } from '../../hoc/useAuth';
-import { logout, actionLogout } from '../../store/user/actionCreators';
+import { logout } from '../../store/user/actionCreators';
 import { getUser } from '../../store/selectors';
 import { fetchLogout } from '../../servisces';
 
@@ -29,14 +29,6 @@ const Header = () => {
 
     localStorage.clear();
   }, []);
-
-  // const callbackFunc = useCallback((url) => {
-  //   signout(() => {
-  //     dispatch(actionLogout(fetchLogout));
-  //     navigate(url, { replace: true });
-  //   });
-  //   localStorage.clear();
-  // }, []); // doesn't work
 
   const addCallbackHandler = useCallback(
     (url) => {

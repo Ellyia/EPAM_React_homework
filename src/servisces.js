@@ -38,7 +38,7 @@ export const fetchRegistration = async (newUser) => {
   return data;
 };
 
-// logout +
+// logout
 export const fetchLogout = async () => {
   const resp = await fetch('http://localhost:4000/logout', {
     method: 'DELETE',
@@ -46,12 +46,11 @@ export const fetchLogout = async () => {
       Authorization: `${localStorage.getItem('result')}`,
     },
   });
-  // const data = await resp.json();
   console.log('resp', resp);
   return resp;
 };
 
-// users/me +
+// users/me
 export const fetchUsersMe = async () => {
   const resp = await fetch('http://localhost:4000/users/me', {
     method: 'GET',
@@ -64,12 +63,12 @@ export const fetchUsersMe = async () => {
   return data;
 };
 
-// /courses/{id} [DELETE]
+// /courses/{id}
 export const fetchCourseDelete = async (id) => {
   const resp = await fetch(`http://localhost:4000/courses/${id}`, {
     method: 'DELETE',
     headers: {
-      Authorization: `${localStorage.getItem('result')}`, // if admin
+      Authorization: `${localStorage.getItem('result')}`,
     },
   });
   const data = await resp.json();
@@ -77,7 +76,7 @@ export const fetchCourseDelete = async (id) => {
   return data;
 };
 
-// /courses/add [POST]
+// /courses/add
 export const fetchCourseAdd = async (newCourse) => {
   const resp = await fetch('http://localhost:4000/courses/add', {
     method: 'POST',
@@ -92,7 +91,7 @@ export const fetchCourseAdd = async (newCourse) => {
   return data;
 };
 
-// /courses/{id} [PUT]
+// /courses/{id}
 export const fetchChangeCourse = async (changedCourse, id) => {
   const resp = await fetch(`http://localhost:4000/courses/${id}`, {
     method: 'PUT',
@@ -108,7 +107,7 @@ export const fetchChangeCourse = async (changedCourse, id) => {
   return data;
 };
 
-// /authors/add [POST]
+// /authors/add
 export const fetchAuthorAdd = async (newAuthor) => {
   const resp = await fetch('http://localhost:4000/authors/add', {
     method: 'POST',

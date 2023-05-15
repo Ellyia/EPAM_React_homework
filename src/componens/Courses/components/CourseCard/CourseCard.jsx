@@ -25,7 +25,7 @@ const CourseCard = ({ cardProps, authorsStr, id }) => {
     async (e, idToDel) => {
       e.preventDefault();
       const resp = await fetchCourseDelete(idToDel);
-      console.log(resp); //
+      console.log(resp);
 
       if (resp.successful) {
         const newCoursesList = coursesList.filter(
@@ -40,13 +40,11 @@ const CourseCard = ({ cardProps, authorsStr, id }) => {
   const onUpdateCourse = useCallback((e, to) => {
     e.preventDefault();
     navigate(to);
-    // PUT
   }, []);
 
   const onShowCourse = useCallback((e, to) => {
     e.preventDefault();
     navigate(to);
-    // GET {id}
   }, []);
 
   const addCallbackHandler = useCallback((func, url) => {
