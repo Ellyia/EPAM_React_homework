@@ -1,7 +1,7 @@
 import { useCallback, useReducer } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router';
 
 import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
@@ -20,17 +20,50 @@ import {
 
 import { addCourse } from '../../store/courses/actionCreators';
 import { toAddAuthor } from '../../store/authors/actionCreators';
+import {
+  fetchCourseAdd,
+  fetchAuthorAdd,
+  fetchChangeCourse,
+} from '../../servisces';
 
 import styles from './CreateCourse.module.css';
 
-const CreateCourse = () => {
+const CourseForm = ({ mode }) => {
   let navigate = useNavigate();
   const dispatch = useDispatch();
 
+  let { courseId } = useParams();
+
   const authorsList = useSelector((state) => state.authorsReducer.authors);
   const coursesList = useSelector((state) => state.coursesReducer.courses);
+  console.log(mode);
 
-  const stateInit = {
+  let stateInitUpdate = {};
+  let courseToUpdate;
+  let index;
+
+  if (mode === 'update') {
+    courseToUpdate = coursesList.find((course) => course.id === courseId);
+    index = coursesList.indexOf(courseToUpdate);
+    console.log('courseToUpdate', courseToUpdate);
+    console.log(authorsList, index);
+
+    const items = authorsList.filter((item) =>
+      courseToUpdate.authors.includes(item.id)
+    );
+
+    stateInitUpdate = {
+      id: courseToUpdate.id,
+      name: '',
+      duration: courseToUpdate.duration,
+      description: courseToUpdate.description,
+      title: courseToUpdate.title,
+      idshki: courseToUpdate.authors,
+      authorsOfCourse: items,
+    };
+  }
+
+  const stateInitCreate = {
     name: '',
     duration: '',
     description: '',
@@ -38,6 +71,8 @@ const CreateCourse = () => {
     idshki: [],
     authorsOfCourse: [],
   };
+
+  const stateInit = mode === 'update' ? stateInitUpdate : stateInitCreate;
 
   const [stateForNewCourse, dispatchLocal] = useReducer(reducer, stateInit);
 
@@ -51,22 +86,39 @@ const CreateCourse = () => {
   }, [stateForNewCourse]);
 
   const onCreateCourse = useCallback(
-    (e) => {
+    async (e) => {
       e.preventDefault();
       if (isFormValid()) {
         const card = {
-          id: uuidv4(),
           title: stateForNewCourse.title,
           description: stateForNewCourse.description,
           creationDate: dateGeneration(),
-          duration: pipeDuration(stateForNewCourse.duration),
+          duration: +stateForNewCourse.duration,
           authors: stateForNewCourse.idshki, // authorsOfCourse.map(x => x.id),
         };
 
-        const newCoursesList = [...coursesList, card];
+        let resp = {};
+        let newCoursesList = [];
+
+        if (mode === 'update') {
+          resp = await fetchChangeCourse(card, stateForNewCourse.id);
+          console.log('fetch', resp);
+          console.log(index);
+          newCoursesList = [
+            ...coursesList.slice(0, index),
+            resp.result,
+            ...coursesList.slice(index + 1),
+          ];
+        } else {
+          resp = await fetchCourseAdd(card);
+          console.log('fetch', resp);
+
+          newCoursesList = [...coursesList, resp.result];
+        }
 
         dispatch(addCourse(newCoursesList));
-        // POST /courses/add ?
+        console.log(coursesList);
+
         navigate('/courses');
       } else {
         alert('Please, fill in all fields');
@@ -76,17 +128,19 @@ const CreateCourse = () => {
   );
 
   const onCreateAuthor = useCallback(
-    (e) => {
+    async (e) => {
       e.preventDefault();
       if (stateForNewCourse.name.length >= 2) {
         const author = {
-          id: uuidv4(),
           name: stateForNewCourse.name,
         };
 
-        const newAuthors = [...authorsList, author];
-
-        dispatch(toAddAuthor(newAuthors));
+        const resp = await fetchAuthorAdd(author);
+        console.log('author', resp.result);
+        if (resp.successful) {
+          const newAuthors = [...authorsList, resp.result];
+          dispatch(toAddAuthor(newAuthors));
+        }
 
         dispatchLocal(deleteName());
       }
@@ -216,6 +270,7 @@ const CreateCourse = () => {
           placeholdetText='Enter title...'
           labelText='Title'
           onChange={onChangeTitle}
+          defaultValue={stateForNewCourse.title}
         />
         <div className={styles.btnCreateCourse}>
           <Button
@@ -233,6 +288,7 @@ const CreateCourse = () => {
           onChange={onChangeDescr}
           id='description'
           minLength='2'
+          defaultValue={stateForNewCourse.description}
         />
       </div>
 
@@ -243,7 +299,7 @@ const CreateCourse = () => {
             <Input
               placeholdetText='Enter author name...'
               onChange={onAddAuthorName}
-              value={stateForNewCourse.name}
+              defaultValue={stateForNewCourse.name}
               minLength={2}
               htmlFor='authorName'
               labelText='Author name'
@@ -258,10 +314,10 @@ const CreateCourse = () => {
             <Input
               placeholdetText='Enter duration in minutes...'
               onChange={onChangeDuration}
-              value={stateForNewCourse.duration}
+              defaultValue={stateForNewCourse.duration}
               htmlFor='duration'
               labelText='Duration'
-              type='number' // вводится +
+              type='number' // вводиться +
             />
             <p>
               Duration: {pipeDuration(stateForNewCourse.duration, '00:00')}{' '}
@@ -285,4 +341,4 @@ const CreateCourse = () => {
     </main>
   );
 };
-export default CreateCourse;
+export default CourseForm;

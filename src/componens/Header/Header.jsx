@@ -7,22 +7,25 @@ import Button from '../../common/Button/Button.jsx';
 import { useAuth } from '../../hoc/useAuth';
 import { logout } from '../../store/user/actionCreators';
 import { getUser } from '../../store/selectors';
+import { fetchLogout } from '../../servisces';
 
 import styles from './Header.module.css';
 
 const Header = () => {
   let navigate = useNavigate();
   const dispatch = useDispatch();
-  const { signout, token } = useAuth();
 
+  const { signout, token } = useAuth();
   const { name } = useSelector(getUser);
 
   const callbackFunc = useCallback((e, url) => {
     e.preventDefault();
 
-    dispatch(logout());
-
-    signout(() => navigate(url, { replace: true }));
+    signout(async () => {
+      const resp = await fetchLogout();
+      resp.ok ? dispatch(logout()) : console.log(resp);
+      navigate(url, { replace: true });
+    });
 
     localStorage.clear();
   }, []);
@@ -41,7 +44,9 @@ const Header = () => {
       <header className={styles.header}>
         <Logo />
         <div className={styles.flex}>
-          <div className={styles.marginRight}>{!!token ? name : ''}</div>
+          <div className={styles.marginRight}>
+            {!!token ? name || 'you are admin' : ''}
+          </div>
           {!!token && (
             <Button text='Logout' callbackFunc={addCallbackHandler('/login')} />
           )}

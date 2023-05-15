@@ -17,7 +17,7 @@ export const description = (e) => ({
 
 export const duration = (e) => ({
   type: ACTION_DURATION,
-  payload: e.target.value,
+  payload: +e.target.value,
 });
 
 export const name = (e) => ({ type: ACTION_NAME, payload: e.target.value });
