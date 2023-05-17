@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useNavigate, Outlet } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { redirect } from 'react-router-dom';
 
 import Logo from './components/Logo/Logo.jsx';
 import Button from '../../common/Button/Button.jsx';
@@ -12,20 +13,29 @@ import { fetchLogout } from '../../servisces';
 import styles from './Header.module.css';
 
 const Header = () => {
-  let navigate = useNavigate();
+  // let navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { signout, token } = useAuth();
-  const { name } = useSelector(getUser);
+  const { name, isAuth } = useSelector(getUser);
 
-  const callbackFunc = useCallback((e, url) => {
+  const callbackFunc = useCallback(async (e, url) => {
     e.preventDefault();
 
     signout(async () => {
       const resp = await fetchLogout();
-      resp.ok ? dispatch(logout()) : console.log(resp);
-      navigate(url, { replace: true });
+      if (resp.ok) {
+        dispatch(logout());
+      }
+      redirect(url, { replace: true });
     });
+
+    // const resp = await fetchLogout();
+
+    // if (resp.ok) {
+    //   dispatch(logout());
+    // }
+    // redirect(url, { replace: true });
 
     localStorage.clear();
   }, []);
@@ -45,9 +55,9 @@ const Header = () => {
         <Logo />
         <div className={styles.flex}>
           <div className={styles.marginRight}>
-            {!!token ? name || 'you are admin' : ''}
+            {!!isAuth ? name || 'you are admin' : ''}
           </div>
-          {!!token && (
+          {!!isAuth && (
             <Button text='Logout' callbackFunc={addCallbackHandler('/login')} />
           )}
         </div>

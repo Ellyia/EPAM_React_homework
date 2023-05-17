@@ -107,4 +107,11 @@ const Courses = () => {
   }
 };
 
+// const coursesLoader = async ({request, params}) => {
+//   console.log(request, params);
+//   const data = await loadCourses();
+//   return data;
+// }
+
 export default Courses;
+// export {coursesLoader};

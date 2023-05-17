@@ -36,7 +36,7 @@ const CourseForm = ({ mode }) => {
 
   const authorsList = useSelector((state) => state.authorsReducer.authors);
   const coursesList = useSelector((state) => state.coursesReducer.courses);
-  console.log(mode);
+  // console.log(mode);
 
   let stateInitUpdate = {};
   let courseToUpdate;
@@ -45,8 +45,8 @@ const CourseForm = ({ mode }) => {
   if (mode === 'update') {
     courseToUpdate = coursesList.find((course) => course.id === courseId);
     index = coursesList.indexOf(courseToUpdate);
-    console.log('courseToUpdate', courseToUpdate);
-    console.log(authorsList, index);
+    // console.log('courseToUpdate', courseToUpdate);
+    // console.log(authorsList, index);
 
     const items = authorsList.filter((item) =>
       courseToUpdate.authors.includes(item.id)
