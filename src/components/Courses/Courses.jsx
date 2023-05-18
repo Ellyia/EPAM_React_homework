@@ -97,6 +97,7 @@ const Courses = () => {
               cardProps={cardProps}
               authorsStr={authorsStr}
               id={id}
+              data-testid='course-card'
             />
           ))}
         </ul>
@@ -107,4 +108,11 @@ const Courses = () => {
   }
 };
 
+// const coursesLoader = async ({request, params}) => {
+//   console.log(request, params);
+//   const data = await loadCourses();
+//   return data;
+// }
+
 export default Courses;
+// export {coursesLoader};

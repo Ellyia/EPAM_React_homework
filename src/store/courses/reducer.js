@@ -7,7 +7,7 @@ export default function coursesReducer(state = coursesInitialState, action) {
     case ACTION_GET_COURSES:
       return { ...state, courses: action.payload };
     case ACTION_ADD_COURSE:
-      return { ...state, courses: action.payload };
+      return [...state.courses, action.payload];
     default:
       return state;
   }

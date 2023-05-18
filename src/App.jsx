@@ -1,16 +1,16 @@
 import { Route, Routes, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import Header from './componens/Header/Header';
-import Courses from './componens/Courses/Courses';
-import CourseForm from './componens/CourseForm/CourseForm';
-import Registration from './componens/Registration/Registration';
-import Login from './componens/Login/Login';
-import CourseInfo from './componens/CourseInfo/CourseInfo';
+import Header from './components/Header/Header';
+import Courses from './components/Courses/Courses';
+import CourseForm from './components/CourseForm/CourseForm';
+import Registration from './components/Registration/Registration';
+import Login from './components/Login/Login';
+import CourseInfo from './components/CourseInfo/CourseInfo';
 
 import RequireAuth from './hoc/RequireAuth';
 import { AuthProvider } from './hoc/AuthProvider';
-import PrivateRoute from './componens/PrivateRouter/PrivateRouter';
+import PrivateRoute from './components/PrivateRouter/PrivateRouter';
 import { getUser } from './store/selectors';
 
 import app from './App.css';

@@ -19,13 +19,10 @@ const CourseCard = ({ cardProps, authorsStr, id }) => {
   const coursesList = useSelector(getCourses);
   const user = useSelector(getUser);
 
-  console.log('user', user);
-
   const onDeleteCourse = useCallback(
     async (e, idToDel) => {
       e.preventDefault();
       const resp = await fetchCourseDelete(idToDel);
-      console.log(resp);
 
       if (resp.successful) {
         const newCoursesList = coursesList.filter(
