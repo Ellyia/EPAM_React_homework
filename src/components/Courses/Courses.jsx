@@ -97,6 +97,7 @@ const Courses = () => {
               cardProps={cardProps}
               authorsStr={authorsStr}
               id={id}
+              data-testid='course-card'
             />
           ))}
         </ul>

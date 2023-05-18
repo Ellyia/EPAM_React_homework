@@ -16,19 +16,19 @@ const Header = () => {
   // let navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { signout, token } = useAuth();
+  // const { signout, token } = useAuth();
   const { name, isAuth } = useSelector(getUser);
 
   const callbackFunc = useCallback(async (e, url) => {
     e.preventDefault();
 
-    signout(async () => {
-      const resp = await fetchLogout();
-      if (resp.ok) {
-        dispatch(logout());
-      }
-      redirect(url, { replace: true });
-    });
+    // signout(async () => {
+    const resp = await fetchLogout();
+    if (resp.ok) {
+      dispatch(logout());
+    }
+    redirect(url, { replace: true });
+    // });
 
     // const resp = await fetchLogout();
 

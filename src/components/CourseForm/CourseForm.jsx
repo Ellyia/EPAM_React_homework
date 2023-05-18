@@ -264,7 +264,7 @@ const CourseForm = ({ mode }) => {
   }, []);
 
   return (
-    <main className={styles.main}>
+    <main className={styles.main} data-testid='course-form'>
       <div className={styles.title}>
         <Input
           placeholdetText='Enter title...'
