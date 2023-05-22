@@ -15,20 +15,21 @@ jest.mock('react-redux');
 
 describe('Courses component', () => {
   test('should display Empty container if courses array length is 0', () => {
+    // jest.spyOn(reduxHooks, 'useSelector').mockReturnValue([]);
     // const mockedUser = { role: 'admin' };
     // jest
     //   .spyOn(reduxHooks, 'useSelector')
     //   .mockReturnValueOnce([])
-    //   .mockRejectedValueOnce([])
-    //   .mockRejectedValueOnce(mockedUser);
-    // jest.spyOn(reduxHooks, 'useDispatch').mockReturnValueOnce(jest.fn());
-    // const { getByTestId } = render(
+    //   .mockReturnValueOnce([])
+    //   .mockReturnValueOnce(mockedUser);
+    // jest.spyOn(reduxHooks, 'useDispatch').mockReturnValue(jest.fn());
+    // const component = render(
     //   <Router>
     //     <Courses />
     //   </Router>
     // );
-    // const courseCard = getByTestId('course-card');
-    // expect(courseCard).toBeNull();
+    // expect(component).toMatchSnapshot();
+    // expect(component.getByTestId('course-card')).toBeNull();
   });
 
   test('should display display amount of CourseCard equal length of courses array', () => {
@@ -62,6 +63,7 @@ describe('Courses component', () => {
     // );
     //     const courseCards = getAllByTestId('course-card');
     //     expect(courseCards).toHaveLength(mockCourses.length);
+    // expect(component).toMatchSnapshot();
   });
 
   test(' CourseForm should be showed after a click on a button "Add new course"', () => {

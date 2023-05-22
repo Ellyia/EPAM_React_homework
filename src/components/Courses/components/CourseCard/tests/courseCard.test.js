@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import redux, { combineReducers, createStore } from "redux";
+import redux, { combineReducers, createStore } from 'redux';
 import CourseCard from '../CourseCard';
 import { toLoadCourses } from '../../../../../store/courses/actionCreators';
 import * as services from '../../../../../servisces'; // Update the import statement
@@ -42,16 +41,20 @@ describe('CourseCard', () => {
   const mockId = 1;
 
   test('renders course card with correct data', () => {
-    // Mock useSelector
+    // // Mock useSelector
     // const mockGetCourses = jest.fn().mockReturnValue([]);
     // const mockGetUser = jest.fn().mockReturnValue({ role: 'admin' });
-    // jest.spyOn(redux, 'useSelector').mockReturnValueOnce(mockGetCourses).mockReturnValueOnce(mockGetUser);
-
+    // jest
+    //   .spyOn(redux, 'useSelector')
+    //   .mockReturnValueOnce(mockGetCourses)
+    //   .mockReturnValueOnce(mockGetUser);
     // // Create a mock store
-    // const rootReducer = combineReducers({authorsReducer, coursesReducer, userReducer});
-
+    // const rootReducer = combineReducers({
+    //   authorsReducer,
+    //   coursesReducer,
+    //   userReducer,
+    // });
     // const store = createStore(rootReducer);
-
     // const mockedState = {
     //   user: {
     //     isAuth: true,
@@ -65,17 +68,24 @@ describe('CourseCard', () => {
     //   subscribe: jest.fn(),
     //   dispatch: jest.fn(),
     // };
-
     // const mockedCourses = [];
     // const mockedUser = { role: 'admin' };
     // const mockedAuthors = [];
-    // jest.spyOn(reduxHooks, 'useSelector').mockReturnValueOnce(mockedCourses).mockRejectedValueOnce(mockedUser).mockRejectedValueOnce(mockedAuthors);
+    // jest
+    //   .spyOn(reduxHooks, 'useSelector')
+    //   .mockReturnValueOnce(mockedCourses)
+    //   .mockRejectedValueOnce(mockedUser)
+    //   .mockRejectedValueOnce(mockedAuthors);
     // jest.spyOn(reduxHooks, 'useDispatch').mockReturnValueOnce(jest.fn());
 
     // render(
     //   <Provider store={mockedStore}>
     //     <BrowserRouter>
-    //       <CourseCard cardProps={mockCardProps} authorsStr={mockAuthorsStr} id={mockId} />
+    //       <CourseCard
+    //         cardProps={mockCardProps}
+    //         authorsStr={mockAuthorsStr}
+    //         id={mockId}
+    //       />
     //     </BrowserRouter>
     //   </Provider>
     // );
@@ -86,7 +96,7 @@ describe('CourseCard', () => {
     // expect(screen.getByText(mockCardProps.duration)).toBeInTheDocument();
     // expect(screen.getByText(mockCardProps.creationDate)).toBeInTheDocument();
   });
-/*
+  /*
   test('calls delete course function on button click', async () => {
     // Mock useSelector and useDispatch
     const mockGetCourses = jest.fn().mockReturnValue([]);

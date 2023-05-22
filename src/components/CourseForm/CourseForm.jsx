@@ -20,11 +20,7 @@ import {
 
 import { addCourse } from '../../store/courses/actionCreators';
 import { toAddAuthor } from '../../store/authors/actionCreators';
-import {
-  fetchCourseAdd,
-  fetchAuthorAdd,
-  fetchChangeCourse,
-} from '../../servisces';
+import { fetchItemAdd, fetchChangeCourse } from '../../servisces';
 
 import styles from './CreateCourse.module.css';
 
@@ -36,7 +32,6 @@ const CourseForm = ({ mode }) => {
 
   const authorsList = useSelector((state) => state.authorsReducer.authors);
   const coursesList = useSelector((state) => state.coursesReducer.courses);
-  // console.log(mode);
 
   let stateInitUpdate = {};
   let courseToUpdate;
@@ -45,8 +40,6 @@ const CourseForm = ({ mode }) => {
   if (mode === 'update') {
     courseToUpdate = coursesList.find((course) => course.id === courseId);
     index = coursesList.indexOf(courseToUpdate);
-    // console.log('courseToUpdate', courseToUpdate);
-    // console.log(authorsList, index);
 
     const items = authorsList.filter((item) =>
       courseToUpdate.authors.includes(item.id)
@@ -102,23 +95,19 @@ const CourseForm = ({ mode }) => {
 
         if (mode === 'update') {
           resp = await fetchChangeCourse(card, stateForNewCourse.id);
-          console.log('fetch', resp);
-          console.log(index);
+
           newCoursesList = [
             ...coursesList.slice(0, index),
             resp.result,
             ...coursesList.slice(index + 1),
           ];
         } else {
-          resp = await fetchCourseAdd(card);
-          console.log('fetch', resp);
+          resp = await fetchItemAdd(card, 'http://localhost:4000/courses/add');
 
           newCoursesList = [...coursesList, resp.result];
         }
 
         dispatch(addCourse(newCoursesList));
-        console.log(coursesList);
-
         navigate('/courses');
       } else {
         alert('Please, fill in all fields');
@@ -135,8 +124,11 @@ const CourseForm = ({ mode }) => {
           name: stateForNewCourse.name,
         };
 
-        const resp = await fetchAuthorAdd(author);
-        console.log('author', resp.result);
+        const resp = await fetchItemAdd(
+          author,
+          'http://localhost:4000/authors/add'
+        );
+
         if (resp.successful) {
           const newAuthors = [...authorsList, resp.result];
           dispatch(toAddAuthor(newAuthors));

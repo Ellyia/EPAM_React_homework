@@ -4,13 +4,8 @@ import { useDispatch } from 'react-redux';
 
 import Button from '../../common/Button/Button';
 import Input from '../../common/Input/Input';
-import { useAuth } from '../../hoc/useAuth';
 
-import {
-  addUser,
-  actionUsersMe,
-  usersMe,
-} from '../../store/user/actionCreators';
+import { addUser, actionUsersMe } from '../../store/user/actionCreators';
 import { fetchLogin, fetchUsersMe } from '../../servisces';
 
 import styles from './Login.module.css';
@@ -23,15 +18,11 @@ const Login = () => {
 
   const fromPage = location.state?.from?.pathname || '/courses';
 
-  const { signin } = useAuth();
-
   // де я маю це прописати, щоб коректно працювало?
   // useEffect(() => {
   if (localStorage.getItem('result')) {
-    signin(localStorage.getItem('result'), () => {
-      dispatch(actionUsersMe(fetchUsersMe));
-      navigate(fromPage, { replace: true });
-    });
+    dispatch(actionUsersMe(fetchUsersMe));
+    navigate(fromPage, { replace: true });
   }
   // }, []);
 
@@ -54,12 +45,11 @@ const Login = () => {
       if (isValid(newUser)) {
         (async () => {
           const data = await fetchLogin(newUser);
-          console.log(data);
 
           if (data?.successful) {
             localStorage.setItem('result', data.result);
             dispatch(addUser(data));
-            signin(data.result, () => navigate(fromPage, { replace: true }));
+            navigate(fromPage, { replace: true });
           }
         })();
       } else {

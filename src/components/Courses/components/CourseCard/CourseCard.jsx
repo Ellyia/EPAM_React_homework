@@ -34,12 +34,7 @@ const CourseCard = ({ cardProps, authorsStr, id }) => {
     [coursesList]
   );
 
-  const onUpdateCourse = useCallback((e, to) => {
-    e.preventDefault();
-    navigate(to);
-  }, []);
-
-  const onShowCourse = useCallback((e, to) => {
+  const onShowOrUpdateCourse = useCallback((e, to) => {
     e.preventDefault();
     navigate(to);
   }, []);
@@ -70,7 +65,10 @@ const CourseCard = ({ cardProps, authorsStr, id }) => {
         <div>
           <Button
             text='Show course'
-            callbackFunc={addCallbackHandler(onShowCourse, `/courses/${id}`)}
+            callbackFunc={addCallbackHandler(
+              onShowOrUpdateCourse,
+              `/courses/${id}`
+            )}
           />
           {user.role === 'admin' ? (
             <>
@@ -78,7 +76,7 @@ const CourseCard = ({ cardProps, authorsStr, id }) => {
                 text='.'
                 style={styles.btnUpdate}
                 callbackFunc={addCallbackHandler(
-                  onUpdateCourse,
+                  onShowOrUpdateCourse,
                   `/courses/update/${id}`
                 )}
               />
