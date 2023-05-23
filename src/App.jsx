@@ -9,7 +9,7 @@ import Login from './components/Login/Login';
 import CourseInfo from './components/CourseInfo/CourseInfo';
 
 import RequireAuth from './hoc/RequireAuth';
-import { AuthProvider } from './hoc/AuthProvider';
+
 import PrivateRoute from './components/PrivateRouter/PrivateRouter';
 import { getUser } from './store/selectors';
 

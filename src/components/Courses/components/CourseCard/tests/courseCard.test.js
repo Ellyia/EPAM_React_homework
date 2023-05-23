@@ -77,7 +77,6 @@ describe('CourseCard', () => {
     //   .mockRejectedValueOnce(mockedUser)
     //   .mockRejectedValueOnce(mockedAuthors);
     // jest.spyOn(reduxHooks, 'useDispatch').mockReturnValueOnce(jest.fn());
-
     // render(
     //   <Provider store={mockedStore}>
     //     <BrowserRouter>
@@ -89,7 +88,6 @@ describe('CourseCard', () => {
     //     </BrowserRouter>
     //   </Provider>
     // );
-
     // expect(screen.getByText(mockCardProps.title)).toBeInTheDocument();
     // expect(screen.getByText(mockCardProps.description)).toBeInTheDocument();
     // expect(screen.getByText(mockAuthorsStr)).toBeInTheDocument();
