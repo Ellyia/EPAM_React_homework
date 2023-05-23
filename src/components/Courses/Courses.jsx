@@ -9,7 +9,7 @@ import SearchBar from './components/SearchBar/SearchBar';
 import { fetchCourses } from '../../store/courses/actionCreators';
 import { fetchAuthors } from '../../store/authors/actionCreators';
 
-import { loadCourses, loadAuthors } from '../../servisces';
+import { loadResourse } from '../../servisces';
 
 import { getCourses, getAuthors, getUser } from '../../store/selectors';
 
@@ -20,11 +20,8 @@ const Courses = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchCourses(loadCourses));
-  }, []);
-
-  useEffect(() => {
-    dispatch(fetchAuthors(loadAuthors));
+    dispatch(fetchCourses(loadResourse));
+    dispatch(fetchAuthors(loadResourse));
   }, []);
 
   const coursesList = useSelector(getCourses, shallowEqual);

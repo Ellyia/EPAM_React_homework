@@ -7,7 +7,6 @@ const authorsReducer = (state = authorsInitialState, action) => {
     case ACTION_GET_AUTHORS:
       return { ...state, authors: action.payload };
     case ACTION_ADD_AUTHORS:
-      console.log('state', state);
       return { ...state, authors: action.payload };
     default:
       return state;

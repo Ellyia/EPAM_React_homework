@@ -1,12 +1,10 @@
-export const loadCourses = async () => {
-  const resp = await fetch('http://localhost:4000/courses/all');
-  const data = await resp.json();
+// /courses // /authors
+export const loadResourse = async (url) => {
+  const resp = await fetch(url);
 
-  return data.result;
-};
-
-export const loadAuthors = async () => {
-  const resp = await fetch('http://localhost:4000/authors/all');
+  if (!resp.ok) {
+    throw new Error(`Error fetch ${url}, status ${resp.status}`);
+  }
   const data = await resp.json();
 
   return data.result;
@@ -20,9 +18,8 @@ export const fetchLogin = async (newUser) => {
       'Content-Type': 'application/json',
     },
   });
-  const data = await resp.json();
 
-  return data;
+  return await resp.json();
 };
 
 export const fetchRegistration = async (newUser) => {
@@ -33,9 +30,8 @@ export const fetchRegistration = async (newUser) => {
       'Content-Type': 'application/json',
     },
   });
-  const data = await resp.json();
 
-  return data;
+  return await resp.json();
 };
 
 // logout
@@ -46,7 +42,7 @@ export const fetchLogout = async () => {
       Authorization: `${localStorage.getItem('result')}`,
     },
   });
-  console.log('resp', resp);
+
   return resp;
 };
 
@@ -58,9 +54,8 @@ export const fetchUsersMe = async () => {
       Authorization: `${localStorage.getItem('result')}`,
     },
   });
-  const data = await resp.json();
-  console.log('resp', data);
-  return data;
+
+  return await resp.json();
 };
 
 // /courses/{id}
@@ -71,24 +66,26 @@ export const fetchCourseDelete = async (id) => {
       Authorization: `${localStorage.getItem('result')}`,
     },
   });
-  const data = await resp.json();
-  console.log('id.del', data);
-  return data;
+
+  return await resp.json();
 };
 
-// /courses/add
-export const fetchCourseAdd = async (newCourse) => {
-  const resp = await fetch('http://localhost:4000/courses/add', {
+// /courses/add // /authors/add
+export const fetchItemAdd = async (newItem, url) => {
+  const resp = await fetch(url, {
     method: 'POST',
-    body: JSON.stringify(newCourse),
+    body: JSON.stringify(newItem),
     headers: {
       'Content-Type': 'application/json',
       Authorization: `${localStorage.getItem('result')}`,
     },
   });
-  const data = await resp.json();
 
-  return data;
+  if (!resp.ok) {
+    throw new Error(`Error fetch ${url}, status ${resp.status}`);
+  }
+
+  return await resp.json();
 };
 
 // /courses/{id}
@@ -102,22 +99,6 @@ export const fetchChangeCourse = async (changedCourse, id) => {
       id: `${id}`,
     },
   });
-  const data = await resp.json();
 
-  return data;
-};
-
-// /authors/add
-export const fetchAuthorAdd = async (newAuthor) => {
-  const resp = await fetch('http://localhost:4000/authors/add', {
-    method: 'POST',
-    body: JSON.stringify(newAuthor),
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `${localStorage.getItem('result')}`,
-    },
-  });
-  const data = await resp.json();
-
-  return data;
+  return await resp.json();
 };

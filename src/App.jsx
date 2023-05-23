@@ -9,7 +9,7 @@ import Login from './components/Login/Login';
 import CourseInfo from './components/CourseInfo/CourseInfo';
 
 import RequireAuth from './hoc/RequireAuth';
-import { AuthProvider } from './hoc/AuthProvider';
+
 import PrivateRoute from './components/PrivateRouter/PrivateRouter';
 import { getUser } from './store/selectors';
 
@@ -20,52 +20,50 @@ const App = () => {
 
   return (
     <div className={app}>
-      <AuthProvider>
-        <Routes>
-          <Route path='/' element={<Header />}>
-            <Route path='registration' element={<Registration />}></Route>
+      <Routes>
+        <Route path='/' element={<Header />}>
+          <Route path='registration' element={<Registration />} />
 
-            <Route path='login' element={<Login />}></Route>
+          <Route path='login' element={<Login />} />
 
-            <Route
-              index
-              element={
-                <RequireAuth>
-                  <Courses />
-                </RequireAuth>
-              }
-            ></Route>
+          <Route
+            index
+            element={
+              <RequireAuth>
+                <Courses />
+              </RequireAuth>
+            }
+          />
 
-            <Route
-              path='courses/:courseId'
-              element={
-                <RequireAuth>
-                  <CourseInfo />
-                </RequireAuth>
-              }
-            ></Route>
+          <Route
+            path='courses/:courseId'
+            element={
+              <RequireAuth>
+                <CourseInfo />
+              </RequireAuth>
+            }
+          />
 
-            <Route
-              path='courses/add'
-              element={
-                <PrivateRoute role={user.role}>
-                  <CourseForm mode={'create'} />
-                </PrivateRoute>
-              }
-            ></Route>
+          <Route
+            path='courses/add'
+            element={
+              <PrivateRoute role={user.role}>
+                <CourseForm mode={'create'} />
+              </PrivateRoute>
+            }
+          />
 
-            <Route
-              path='courses/update/:courseId'
-              element={
-                <PrivateRoute role={user.role}>
-                  <CourseForm mode={'update'} />
-                </PrivateRoute>
-              }
-            ></Route>
-          </Route>
-          <Route path='*' element={<Navigate to='/' replace />} />
-        </Routes>
-      </AuthProvider>
+          <Route
+            path='courses/update/:courseId'
+            element={
+              <PrivateRoute role={user.role}>
+                <CourseForm mode={'update'} />
+              </PrivateRoute>
+            }
+          />
+        </Route>
+        <Route path='*' element={<Navigate to='/' replace />} />
+      </Routes>
     </div>
   );
 };

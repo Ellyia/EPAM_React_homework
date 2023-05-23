@@ -1,7 +1,7 @@
 import { ACTION_GET_AUTHORS, ACTION_ADD_AUTHORS } from './actionTypes';
 
 export const fetchAuthors = (request) => (dispatch) => {
-  request()
+  request('http://localhost:4000/authors/all')
     .then((data) => dispatch(toLoadAuthors(data)))
     .catch((err) => console.log('err', err));
 }; //
