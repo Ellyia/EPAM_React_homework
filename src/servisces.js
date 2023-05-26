@@ -1,13 +1,17 @@
 // /courses // /authors
 export const loadResourse = async (url) => {
-  const resp = await fetch(url);
+  try {
+    const resp = await fetch(url);
 
-  if (!resp.ok) {
-    throw new Error(`Error fetch ${url}, status ${resp.status}`);
+    if (!resp.ok) {
+      throw new Error(`Error fetch ${url}, status ${resp.status}`);
+    }
+    const data = await resp.json();
+
+    return data.result;
+  } catch (e) {
+    console.error(e.message);
   }
-  const data = await resp.json();
-
-  return data.result;
 };
 
 export const fetchLogin = async (newUser) => {
