@@ -1,6 +1,8 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 // import fetchMock from 'jest-fetch-mock';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
+import { Routes, Route } from 'react-router';
 import * as reduxHooks from 'react-redux';
 import Courses from '../Courses';
 import CourseForm from '../../CourseForm/CourseForm';
@@ -10,6 +12,8 @@ import configureStore from 'redux-mock-store';
 jest.mock('react-redux');
 
 const mockStore = configureStore([]);
+
+jest.mock('../../CourseForm/CourseForm', () => () => <div data-testid='course-form' />);
 
 const initialState = {
   user: { role: 'admin' },
@@ -84,6 +88,7 @@ describe('Courses component', () => {
       // <Provider store={store}>
       <Router>
         <Courses />
+        <CourseForm/>
       </Router>
       // </Provider>
     );
@@ -92,9 +97,9 @@ describe('Courses component', () => {
     addCourseButton.onclick = addCallbackHandler;
     fireEvent.click(addCourseButton);
 
-    expect(addCallbackHandler).toHaveBeenCalled(); // якщо очікувати рендера іншої компоненти, її не знаходить, як її відслідкувати?
+    expect(addCallbackHandler).toHaveBeenCalled();
 
-    // const courseFormElement = screen.getByTestId('course-form');
-    // expect(courseFormElement).toBeInTheDocument();
+    const courseFormElement = screen.getByTestId('course-form');
+    expect(courseFormElement).toBeInTheDocument();
   });
 });
