@@ -8,7 +8,7 @@ import Registration from './components/Registration/Registration';
 import Login from './components/Login/Login';
 import CourseInfo from './components/CourseInfo/CourseInfo';
 
-import RequireAuth from './hoc/RequireAuth';
+import RequireAuth from './components/RequireAuth/RequireAuth';
 
 import PrivateRoute from './components/PrivateRouter/PrivateRouter';
 import { getUser } from './store/selectors';
@@ -47,7 +47,7 @@ const App = () => {
           <Route
             path='courses/add'
             element={
-              <PrivateRoute role={user.role}>
+              <PrivateRoute>
                 <CourseForm mode={'create'} />
               </PrivateRoute>
             }
@@ -56,7 +56,7 @@ const App = () => {
           <Route
             path='courses/update/:courseId'
             element={
-              <PrivateRoute role={user.role}>
+              <PrivateRoute>
                 <CourseForm mode={'update'} />
               </PrivateRoute>
             }

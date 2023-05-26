@@ -9,7 +9,6 @@ import { addUser, actionUsersMe } from '../../store/user/actionCreators';
 import { fetchLogin, fetchUsersMe } from '../../servisces';
 
 import styles from './Login.module.css';
-// import { useEffect } from 'react';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -19,15 +18,13 @@ const Login = () => {
   const fromPage = location.state?.from?.pathname || '/courses';
 
   // де я маю це прописати, щоб коректно працювало?
-  // useEffect(() => {
   if (localStorage.getItem('result')) {
     dispatch(actionUsersMe(fetchUsersMe));
     navigate(fromPage, { replace: true });
   }
-  // }, []);
 
   const isValid = useCallback(({ password, email }) => {
-    return password.length > 5 && email.length > 2; // додати валiдацiю email
+    return password.length > 5 && email.length > 2;
   }, []);
 
   const loginUser = useCallback((e) => {
@@ -45,6 +42,7 @@ const Login = () => {
       if (isValid(newUser)) {
         (async () => {
           const data = await fetchLogin(newUser);
+          console.log(data);
 
           if (data?.successful) {
             localStorage.setItem('result', data.result);

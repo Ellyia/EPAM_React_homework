@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { useCallback, useEffect, useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 
 import CourseCard from './components/CourseCard/CourseCard';
@@ -16,7 +16,6 @@ import { getCourses, getAuthors, getUser } from '../../store/selectors';
 import styles from './Courses.module.css';
 
 const Courses = () => {
-  let navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -46,23 +45,51 @@ const Courses = () => {
     setSearchPhrase(searchPhrase);
   }, []);
 
-  const visibleCourses = searchCourse(coursesList, searchPhrase);
+  const visibleCourses = useMemo(() => {
+    return searchCourse(coursesList, searchPhrase);
+  }, [coursesList, searchPhrase, searchCourse]);
 
-  const cards = visibleCourses?.map((cardData) => {
-    const { id, ...cardProps } = cardData;
-    const authors = cardProps.authors;
+  const cards = Array.isArray(visibleCourses)
+    ? visibleCourses?.map((cardData) => {
+        const { id, ...cardProps } = cardData;
+        const authors = cardProps.authors;
 
-    let authorsStr = authorsList
-      ?.filter((author) => authors.includes(author.id))
-      .map((x) => x.name)
-      .join(', ');
+        let authorsStr = authorsList
+          ?.filter((author) => authors.includes(author.id))
+          .map((x) => x.name)
+          .join(', ');
 
-    return {
-      id,
-      cardProps,
-      authorsStr,
-    };
-  });
+        return {
+          id,
+          cardProps,
+          authorsStr,
+        };
+      })
+    : null;
+
+  return (
+    <div className={styles.main}>
+      <div className={styles.searchPanel}>
+        <SearchBar onUpdateSearch={onUpdateSearch} />
+        {user.role === 'admin' ? <AddNewCourseBtn /> : null}
+      </div>
+      <ul className={styles.cards}>
+        {cards?.map(({ id, cardProps, authorsStr }) => (
+          <CourseCard
+            key={id}
+            cardProps={cardProps}
+            authorsStr={authorsStr}
+            id={id}
+            data-testid='course-card'
+          />
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export const AddNewCourseBtn = () => {
+  const navigate = useNavigate();
 
   const onAddNewCourse = useCallback((e, url) => {
     e.preventDefault();
@@ -75,34 +102,12 @@ const Courses = () => {
     };
   }, []);
 
-  if (localStorage.getItem('result')) {
-    return (
-      <div className={styles.main}>
-        <div className={styles.searchPanel}>
-          <SearchBar onUpdateSearch={onUpdateSearch} />
-          {user.role === 'admin' ? (
-            <Button
-              text={'Add new course'}
-              callbackFunc={addCallbackHandler(onAddNewCourse, '/courses/add')}
-            />
-          ) : null}
-        </div>
-        <ul className={styles.cards}>
-          {cards?.map(({ id, cardProps, authorsStr }) => (
-            <CourseCard
-              key={id}
-              cardProps={cardProps}
-              authorsStr={authorsStr}
-              id={id}
-              data-testid='course-card'
-            />
-          ))}
-        </ul>
-      </div>
-    );
-  } else {
-    return <Navigate to='/login' replace />;
-  }
+  return (
+    <Button
+      text={'Add new course'}
+      callbackFunc={addCallbackHandler(onAddNewCourse, '/courses/add')}
+    />
+  );
 };
 
 // const coursesLoader = async ({request, params}) => {
